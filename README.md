@@ -12,9 +12,11 @@ The inputs themselves are all DDAU. When a change occurs it fires an action whic
 
 Initially, all form inputs are supplied with initial values, which are not mutated when fields change.
 
+_Assuming `userModel` has an `email` property:_
+
 ```hbs
 {{#simple-form userModel as |f|}}
-  ...
+  {{f.input "email" placeholder="user@example.com" label="Email Address"}}
 {{/simple-form}}
 ```
 
