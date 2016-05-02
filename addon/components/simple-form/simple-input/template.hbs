@@ -1,0 +1,18 @@
+{{#if modelAttr}}
+  {{#if label}}
+    <label for={{inputElementId}}>{{label}}</label>
+  {{/if}}
+  {{component inputComponentName
+    id=inputElementId
+    name=name
+    inputAttributes=inputAttributes
+    value=initialValue
+    on-change=(action "inputValueChanged")
+  }}
+  {{#if hasErrors}}
+    <p class="SimpleForm-errors">{{errorMessages}}</p>
+  {{/if}}
+  {{#if hasHint}}
+    <p class="SimpleForm-hint">{{hintMessage}}</p>
+  {{/if}}
+{{/if}}
