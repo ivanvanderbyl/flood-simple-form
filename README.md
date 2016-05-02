@@ -4,7 +4,7 @@ The DDAU (Data Down, Actions Up) form builder we use at Flood IO. It's based on 
 
 The basic design behind this is that it shouldn't make any assumptions about your model or validations, and changes should be buffered until your form data is valid. This is achieved using `ember-buffered-proxy`. 
 
-The inputs themselves are all DDAU. When a change occurs it fires an action which propagates that change up to the form component, which in turn asks the model if its valid. If it isn't, an error message is shown, and if it is, you can apply these changes to your model.
+The inputs themselves are all DDAU. When a change occurs it fires an action which propagates that change up to the form component, ~~which in turn asks the model if its valid. If it isn't, an error message is shown, and if it is, you can apply these changes to your model. TBD.~~
 
 ## Form lifecycle
 
