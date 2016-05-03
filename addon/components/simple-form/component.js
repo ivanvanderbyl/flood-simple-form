@@ -3,7 +3,7 @@ import Component from 'ember-component';
 import layout from './template';
 import BufferedProxy from 'ember-buffered-proxy/proxy';
 
-const { computed } = Ember;
+const { isPresent } = Ember;
 
 function isFunction(thing) {
   return Ember.typeOf(thing) === 'function';
@@ -38,10 +38,7 @@ const SimpleFormComponent = Component.extend({
 
   submit(event) {
     event.preventDefault();
-
-    const formData = this.get('formValues.buffer');
-    // formData.applyBufferedChanges();
-    this.sendAction('on-submit', formData);
+    this.send('submitForm');
   },
 
   actions: {
@@ -55,7 +52,7 @@ const SimpleFormComponent = Component.extend({
 
       if (isFunction(this.getAttr('on-submit'))) {
         let result = this.getAttr('on-submit')(formData);
-        if (result.finally) {
+        if (isPresent(result) && result.finally) {
           this.set('disabled', true);
           result.finally(() => this.set('disabled', false));
         }

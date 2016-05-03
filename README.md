@@ -63,6 +63,11 @@ export default Ember.Controller.extend({
 {{/simple-form}}
 ```
 
+### `simple-form`
+
+This is the main `<form>` constructor. It accepts an initial form values object/model to populate each form field. 
+This is the initial value per form submission cycle, as mentioned in the lifecycle section above.
+
 ## Form Controls
 
 Type | HTML form | Additional attributes

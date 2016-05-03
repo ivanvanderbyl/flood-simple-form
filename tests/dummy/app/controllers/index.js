@@ -16,11 +16,10 @@ export default Ember.Controller.extend({
 
   actions: {
     saveChanges(newData) {
-      console.log(newData);
-
       return new Ember.RSVP.Promise((resolve) => {
         setTimeout(() => {
           Ember.setProperties(this.get('user'), newData);
+          this.propertyDidChange('user');
           resolve();
         }, 1e3);
       });

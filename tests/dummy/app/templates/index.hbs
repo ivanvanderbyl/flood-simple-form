@@ -1,9 +1,14 @@
+<p>
+  Demonstrates use of <pre>flood-simple-form</pre>. There's a 1 second delay on resolving the save promise to simulate latency, and show that we disable the form while saving.
+</p>
+
 {{#simple-form user on-submit=(action "saveChanges") as |f|}}
 
   {{f.input "number" type="tel" placeholder="(•••) ••• ••••" label="Phone Number" hint="Your Phone Number"}}
   {{f.input "email" placeholder="user@example.com" label="Email Address"}}
-  {{f.input "email" placeholder="Email" label="Email Address" disabled=true classNames="custom-class"}}
+  {{f.input "email" label="Email Address" classNames="custom-class"}}
   {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
+  {{f.input "country" type="select" multiple=true placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
 
   {{f.submit "Create User"}}
 {{/simple-form}}
@@ -19,7 +24,7 @@
     <dd>{{user.number}}</dd>
 
     <dt>Country</dt>
-    <dd>{{user.country.name}}</dd>
+    <dd>{{if user.country.name user.country.name user.country.firstObject.name}}</dd>
 
   </dl>
 </div>
