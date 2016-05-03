@@ -7,6 +7,12 @@ export default Ember.Controller.extend({
     number: '',
   },
 
+  countries: [
+    {id: 'au', name: 'Australia'},
+    {id: 'us', name: 'United States'},
+    {id: 'nz', name: 'New Zealand'},
+  ],
+
   actions: {
     saveChanges(newData) {
       return new Ember.RSVP.Promise((resolve) => {

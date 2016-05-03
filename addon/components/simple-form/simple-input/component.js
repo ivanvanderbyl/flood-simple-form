@@ -65,7 +65,7 @@ const InputComponent = Component.extend({
     const restrictedAttrs = ['classNames', 'type', 'hint', 'tagName', 'initialValues'];
     let inputAttributes = Object.keys(newAttrs).reduce((inputAttrs, key) => {
       if (restrictedAttrs.indexOf(key) === -1) {
-        inputAttrs[key] = newAttrs[key];
+        inputAttrs[key] = this.getAttr(key);
       }
 
       return inputAttrs;
