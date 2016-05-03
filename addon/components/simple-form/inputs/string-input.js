@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-export default Ember.TextArea.extend({
+export default Ember.TextField.extend({
   inputAttributes: {},
 
   didReceiveAttrs({newAttrs}) {

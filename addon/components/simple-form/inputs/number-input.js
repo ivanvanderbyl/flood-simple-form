@@ -1,5 +1,9 @@
 import StringInputComponent from './string-input';
 
 export default StringInputComponent.extend({
-  type: 'tel',
+  type: 'number',
+
+  min: null,
+
+  max: null,
 });
