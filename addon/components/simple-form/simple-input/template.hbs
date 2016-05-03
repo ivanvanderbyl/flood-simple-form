@@ -1,16 +1,32 @@
-{{#if label}}<label for={{inputElementId}}>{{label}}</label>{{/if}}
-<div class="SimpleForm-field">
-  {{component inputComponentName
-    id=inputElementId
-    name=name
-    inputAttributes=inputAttributes
-    value=initialValue
-    on-change=(action "inputValueChanged")
-  }}
-  {{#if hasErrors}}
-    <p class="SimpleForm-errors">{{errorMessages}}</p>
-  {{/if}}
-  {{#if hasHint}}
-    <p class="SimpleForm-hint">{{hintMessage}}</p>
-  {{/if}}
-</div>
+{{#if hasInlineLabel}}
+  <div class="SimpleForm-field SimpleForm-field__inline">
+    <label for={{inputElementId}}>
+      {{#unless isInputFirst}}{{label}}{{/unless}}
+      {{component inputComponentName
+        id=inputElementId
+        name=name
+        inputAttributes=inputAttributes
+        value=initialValue
+        on-change=(action "inputValueChanged")
+      }}
+      {{#if isInputFirst}}{{label}}{{/if}}
+    </label>
+  </div>
+{{else}}
+  {{#if label}}<label for={{inputElementId}}>{{label}}</label>{{/if}}
+  <div class="SimpleForm-field">
+    {{component inputComponentName
+      id=inputElementId
+      name=name
+      inputAttributes=inputAttributes
+      value=initialValue
+      on-change=(action "inputValueChanged")
+    }}
+    {{#if hasErrors}}
+      <p class="SimpleForm-errors">{{errorMessages}}</p>
+    {{/if}}
+    {{#if hasHint}}
+      <p class="SimpleForm-hint">{{hintMessage}}</p>
+    {{/if}}
+  </div>
+{{/if}}

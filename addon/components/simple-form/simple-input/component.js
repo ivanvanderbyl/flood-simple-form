@@ -8,6 +8,10 @@ const {
   String: { dasherize },
 } = Ember;
 
+const INLINE_TYPES = {
+  boolean: true,
+};
+
 const DEFAULT_TYPE = 'string';
 
 const InputComponent = Component.extend({
@@ -43,6 +47,20 @@ const InputComponent = Component.extend({
   hasHint: computed.notEmpty('hint'),
   hintMessage: computed.alias('hint'),
 
+  /**
+   * Display label inline with input element.
+   *
+   * @type {Boolean}
+   */
+  inline: computed('type', {
+    get() {
+      const type = this.get('type');
+      return INLINE_TYPES[type] === true;
+    }
+  }),
+
+  isInputFirst: computed.alias('inline'),
+
   initialValue: computed('initialValues.@each', 'modelAttr', {
     get() {
       const initialValues = this.get('initialValues');
@@ -65,6 +83,10 @@ const InputComponent = Component.extend({
       const type = this.get('type');
       return `simple-form/inputs/${type}-input`;
     }
+  }),
+
+  hasInlineLabel: computed('inline', 'label', function() {
+    return this.get('inline') && isPresent(this.get('label'));
   }),
 
   _inputClassName: computed('modelAttr', {
