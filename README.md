@@ -68,6 +68,11 @@ export default Ember.Controller.extend({
 This is the main `<form>` constructor. It accepts an initial form values object/model to populate each form field. 
 This is the initial value per form submission cycle, as mentioned in the lifecycle section above.
 
+#### Actions
+
+- `on-submit`: Fires when form is submitted, either by submit button or other enter key press. The first parameter sent to the action handler is an object containing only the changed attributes.
+- ~~`on-change`: Fires when any form value changes. The first parameter sent to the action handler is an object containing only the changed attributes.~~
+
 ## Form Controls
 
 Type | HTML form | Additional attributes
