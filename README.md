@@ -6,6 +6,8 @@ The basic design behind this is that it shouldn't make any assumptions about you
 
 The inputs themselves are all DDAU. When a change occurs it fires an action which propagates that change up to the form component, ~~which in turn asks the model if its valid. If it isn't, an error message is shown, and if it is, you can apply these changes to your model. TBD.~~
 
+[![Build Status](https://travis-ci.org/ivanvanderbyl/flood-simple-form.svg?branch=master)](https://travis-ci.org/ivanvanderbyl/flood-simple-form)
+
 ## Form lifecycle
 
 `flood-simple-form` is implemented with certain life cycle behaviours, designed to provide a consistent user experience.
