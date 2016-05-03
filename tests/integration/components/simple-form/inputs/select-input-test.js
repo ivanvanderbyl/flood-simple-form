@@ -59,8 +59,7 @@ test('it sends changes to form', function (assert) {
     {{/simple-form}}
   `);
 
-  this.$('.country select').val('us');
-  this.$('.country select').trigger('change');
+  this.$('.country select').val('us').change();
 
   assert.equal(this.$('.country option:selected').text().trim(), 'United States', 'USA is selected');
   this.$('form').submit();
