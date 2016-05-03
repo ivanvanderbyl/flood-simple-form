@@ -2,14 +2,20 @@ import Ember from 'ember';
 import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed';
-const { get, isPresent } = Ember;
+const {
+  get,
+  isPresent,
+  String: { dasherize },
+} = Ember;
+
+const DEFAULT_TYPE = 'string';
 
 const InputComponent = Component.extend({
   layout,
 
   tagName: 'div',
   classNames: ['SimpleForm-input'],
-  classNameBindings: ['modelAttr'],
+  classNameBindings: ['_inputClassName'],
 
   /**
    * The underlying input type (name of component to render).
@@ -18,7 +24,7 @@ const InputComponent = Component.extend({
    *
    * @type {String}
    */
-  type: 'text',
+  type: DEFAULT_TYPE,
 
   /**
    * The model attribute to apply to this input.
@@ -58,6 +64,13 @@ const InputComponent = Component.extend({
     get() {
       const type = this.get('type');
       return `simple-form/inputs/${type}-input`;
+    }
+  }),
+
+  _inputClassName: computed('modelAttr', {
+    get() {
+      const modelAttr = this.get('modelAttr') || '';
+      return dasherize(modelAttr).toLowerCase();
     }
   }),
 

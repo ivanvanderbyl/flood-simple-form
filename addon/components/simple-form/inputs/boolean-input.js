@@ -1,8 +1,27 @@
-import StringInputComponent from './string-input';
+import Ember from 'ember';
 import computed from 'ember-computed';
 
-export default StringInputComponent.extend({
-  type: 'checkbox',
+export default Ember.Checkbox.extend({
+  inputAttributes: {},
 
-  checked: computed.reads('value')
+  didReceiveAttrs() {
+    const newInputAttrs = this.getAttr('inputAttributes') || {};
+    Object.keys(newInputAttrs).forEach((key) => {
+      this.set(key, newInputAttrs[key]);
+    });
+  },
+
+  attributeBindings: ['checked'],
+
+  checked: computed('value', {
+    get() {
+      const value = this.get('value');
+      return !!value;
+    }
+  }),
+
+  change(event) {
+    this._super(event);
+    this.sendAction('on-change', this.get('checked'));
+  },
 });

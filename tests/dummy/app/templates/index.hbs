@@ -9,6 +9,7 @@
   {{f.input "email" label="Email Address" classNames="custom-class"}}
   {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
   {{f.input "country" type="select" multiple=true placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
+  {{f.input "isAdmin" type="boolean" label="Is Admin?"}}
 
   {{f.submit "Create User"}}
 {{/simple-form}}
@@ -25,6 +26,9 @@
 
     <dt>Country</dt>
     <dd>{{if user.country.name user.country.name user.country.firstObject.name}}</dd>
+
+    <dt>Is Admin</dt>
+    <dd>{{user.isAdmin}}</dd>
 
   </dl>
 </div>

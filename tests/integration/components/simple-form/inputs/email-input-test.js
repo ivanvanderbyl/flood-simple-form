@@ -6,19 +6,11 @@ moduleForComponent('simple-form/inputs/email-input', 'Integration | Component | 
 });
 
 test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
-
-  this.render(hbs`{{simple-form/inputs/email-input}}`);
-
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
   this.render(hbs`
-    {{#simple-form/inputs/email-input}}
-      template block text
-    {{/simple-form/inputs/email-input}}
+    {{#simple-form as |f|}}
+      {{f.input "email" type="email"}}
+    {{/simple-form}}
   `);
 
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.equal(this.$('.email input').attr('type'), 'email', 'it renders as an email input');
 });
