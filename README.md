@@ -79,13 +79,13 @@ This is the initial value per form submission cycle, as mentioned in the lifecyc
 
 Type | HTML form | Additional attributes
 --- | --- | ---
-`boolean` | `<input type="checkbox" />` | None
-`collection` | `<select>` | `multiple=<boolean>`
+`boolean` | `<input type="checkbox" />` | `isInputFirst:<boolean>` indicates whether the input comes before the label.
+`collection` | `<select>` | `multiple=<boolean>` indicates whether the input should be rendered as a list with multiple selection.
 `date` | `<input type="date" />` |
 `email` | `<input type="email" />`| 
 `number` | `<input type="number" />`| 
 `password` | `<input type="password" />`| 
-`checkboxes` | collection of `<input type="radio" />` with labels | 
+~~`checkboxes`~~ | ~~TBD collection of `<input type="radio" />` with labels~~ |
 `string` | `<input type="text" />`| 
 `text` | `<textarea>` | 
 
