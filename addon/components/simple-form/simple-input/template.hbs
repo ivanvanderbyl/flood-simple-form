@@ -1,7 +1,5 @@
-{{#if modelAttr}}
-  {{#if label}}
-    <label for={{inputElementId}}>{{label}}</label>
-  {{/if}}
+{{#if label}}<label for={{inputElementId}}>{{label}}</label>{{/if}}
+<div class="SimpleForm-field">
   {{component inputComponentName
     id=inputElementId
     name=name
@@ -15,4 +13,4 @@
   {{#if hasHint}}
     <p class="SimpleForm-hint">{{hintMessage}}</p>
   {{/if}}
-{{/if}}
+</div>

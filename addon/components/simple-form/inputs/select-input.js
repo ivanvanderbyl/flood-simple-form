@@ -1,13 +1,12 @@
 import Ember from 'ember';
-import TedSelect from 'ember-ted-select/components/ted-select';
-// import layout from 'ember-ted-select/templates/components/ted-select';
-
+import Component from 'ember-component';
 import layout from '../../../templates/components/simple-form/inputs/select-input';
 
-const { computed, get } = Ember;
-
-export default TedSelect.extend({
+export default Component.extend({
   layout,
+
+  tagName: 'select',
+  classNames: ['SimpleForm-select'],
 
   didReceiveAttrs({newAttrs}) {
     const newInputAttrs = newAttrs.inputAttributes.value || {};
@@ -16,9 +15,30 @@ export default TedSelect.extend({
     });
   },
 
-  prompt: computed.alias('placeholder'),
-  content: computed.alias('collection'),
-  selected: computed.oneWay('value'),
+  optionValuePath: 'id',
+  optionLabelPath: 'title',
+  optionDisabledKey: null,
+  selected: null,
+  placeholder: 'Select an option',
+  sortBy: null,
+  multiple: false,
+  disabled: false,
+
+  attributeBindings: ['multiple', 'disabled'],
+
+  sortArray: Ember.computed('sortBy', function(){
+    if (this.get('sortBy')){
+      return this.get('sortBy').replace(' ', '').split(',');
+    }
+    return [];
+  }),
+
+  sortedContent: Ember.computed.sort('collection', 'sortArray'),
+
+  change(event) {
+    const target = event.target;
+    this.send('onChange', target);
+  },
 
   actions: {
     onChange(target){
@@ -28,13 +48,13 @@ export default TedSelect.extend({
       //if multiple, .val() returns an array. if not, it's a single value
       if (this.get('multiple')){
         let values = Ember.A(value);
-        selection = this.get('content').filter(option => {
-          let optionVal = Ember.get(option, this.get('optionValueKey')).toString();
+        selection = this.get('collection').filter(option => {
+          let optionVal = Ember.get(option, this.get('optionValuePath')).toString();
           return values.contains(optionVal);
         });
       } else {
-        selection = this.get('content').find(option => {
-          return Ember.get(option, this.get('optionValueKey')).toString() === value;
+        selection = this.get('collection').find(option => {
+          return Ember.get(option, this.get('optionValuePath')).toString() === value;
         });
       }
 

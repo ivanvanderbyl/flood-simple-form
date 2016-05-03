@@ -1,22 +1,16 @@
-<select
-  onchange={{action "onChange" value="target"}}
-  class={{selectClassNames}}
-  multiple={{multiple}}
-  disabled={{disabled}}>
-  {{#if prompt}}
+{{#if placeholder}}
+<option
+  value=""
+  selected={{ted-select-is-equal null value}}
+  class="SimpleForm-select__placeholder">
+  {{placeholder}}
+</option>
+{{/if}}
+{{#each sortedContent key="@index" as |option|}}
   <option
-    value=""
-    selected={{ted-select-is-equal null selected}}
-    class="Ted-select__prompt">
-    {{prompt}}
+    value={{get option optionValuePath}}
+    selected={{ted-select-is-equal (get option optionValuePath) (get value optionValuePath)}}
+    disabled={{get option optionDisabledKey}}>
+    {{get option optionLabelPath}}
   </option>
-  {{/if}}
-  {{#each sortedContent key="@index" as |option|}}
-    <option
-      value="{{get option optionValueKey}}"
-      selected={{ted-select-is-equal (get option optionValueKey) (get selected optionValueKey)}}
-      disabled={{get option optionDisabledKey}}>
-      {{get option optionLabelKey}}
-    </option>
-  {{/each}}
-</select>
+{{/each}}

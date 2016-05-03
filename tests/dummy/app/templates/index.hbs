@@ -3,7 +3,7 @@
   {{f.input "number" type="tel" placeholder="(•••) ••• ••••" label="Phone Number" hint="Your Phone Number"}}
   {{f.input "email" placeholder="user@example.com" label="Email Address"}}
   {{f.input "email" placeholder="Email" label="Email Address" disabled=true classNames="custom-class"}}
-  {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValueKey="id" optionLabelKey="name"}}
+  {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
 
   {{f.submit "Create User"}}
 {{/simple-form}}

@@ -23,7 +23,7 @@ moduleForComponent('simple-form/inputs/select-input', 'Integration | Component |
 test('it renders', function(assert) {
   this.render(hbs`
     {{#simple-form user as |f|}}
-      {{f.input "country" type="select" placeholder="Country..." label="Where are you from?" collection=countries optionValueKey="id" optionLabelKey="name"}}
+      {{f.input "country" type="select" placeholder="Country..." label="Where are you from?" collection=countries optionValuePath="id" optionLabelPath="name"}}
     {{/simple-form}}
   `);
 
@@ -36,7 +36,7 @@ test('it renders', function(assert) {
 test('it can pass in initial selection', function(assert) {
   this.render(hbs`
     {{#simple-form user as |f|}}
-      {{f.input "country" type="select" placeholder="Country..." label="Where are you from?" collection=countries optionValueKey="id" optionLabelKey="name"}}
+      {{f.input "country" type="select" placeholder="Country..." label="Where are you from?" collection=countries optionValuePath="id" optionLabelPath="name"}}
     {{/simple-form}}
   `);
 
@@ -55,7 +55,7 @@ test('it sends changes to form', function (assert) {
 
   this.render(hbs`
     {{#simple-form user on-submit=(action "handleFormSubmit") as |f|}}
-      {{f.input "country" type="select" placeholder="Country..." label="Where are you from?" collection=countries optionValueKey="id" optionLabelKey="name"}}
+      {{f.input "country" type="select" placeholder="Country..." label="Where are you from?" collection=countries optionValuePath="id" optionLabelPath="name"}}
     {{/simple-form}}
   `);
 
