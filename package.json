@@ -1,6 +1,6 @@
 {
   "name": "flood-simple-form",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The Data Down, Actions Up form builder we use at Flood IO",
   "directories": {
     "doc": "doc",
