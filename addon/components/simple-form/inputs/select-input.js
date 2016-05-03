@@ -1,8 +1,10 @@
 import Ember from 'ember';
 import TedSelect from 'ember-ted-select/components/ted-select';
-import layout from 'ember-ted-select/templates/components/ted-select';
+// import layout from 'ember-ted-select/templates/components/ted-select';
 
-const { computed } = Ember;
+import layout from '../../../templates/components/simple-form/inputs/select-input';
+
+const { computed, get } = Ember;
 
 export default TedSelect.extend({
   layout,
@@ -15,8 +17,8 @@ export default TedSelect.extend({
   },
 
   prompt: computed.alias('placeholder'),
-
   content: computed.alias('collection'),
+  selected: computed.oneWay('value'),
 
   actions: {
     onChange(target){
@@ -35,8 +37,6 @@ export default TedSelect.extend({
           return Ember.get(option, this.get('optionValueKey')).toString() === value;
         });
       }
-
-      console.log(selection);
 
       if (this.getAttr('on-change')){
         this.getAttr('on-change')(selection);

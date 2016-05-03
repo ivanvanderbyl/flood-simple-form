@@ -40,7 +40,7 @@ const SimpleFormComponent = Component.extend({
     event.preventDefault();
 
     const formData = this.get('formValues.buffer');
-    formData.applyBufferedChanges();
+    // formData.applyBufferedChanges();
     this.sendAction('on-submit', formData);
   },
 

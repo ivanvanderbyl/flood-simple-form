@@ -63,6 +63,20 @@ export default Ember.Controller.extend({
 {{/simple-form}}
 ```
 
+## Form Controls
+
+Type | HTML form | Additional attributes
+--- | --- | ---
+`boolean` | `<input type="checkbox" />` | None
+`collection` | `<select>` | `multiple=<boolean>`
+`date` | `<input type="date" />` |
+`email` | `<input type="email" />`| 
+`number` | `<input type="number" />`| 
+`password` | `<input type="password" />`| 
+`checkboxes` | collection of `<input type="radio" />` with labels | 
+`string` | `<input type="text" />`| 
+`text` | `<textarea>` | 
+
 ## Custom Form Controls
 
 `flood-simple-form` is flexible enough to allow custom form components, as long as they behave like all others.

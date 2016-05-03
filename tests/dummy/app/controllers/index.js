@@ -5,6 +5,7 @@ export default Ember.Controller.extend({
   user: {
     email: 'user@example.com',
     number: '',
+    country: {id: 'au', name: 'Australia'}
   },
 
   countries: [
@@ -15,6 +16,8 @@ export default Ember.Controller.extend({
 
   actions: {
     saveChanges(newData) {
+      console.log(newData);
+
       return new Ember.RSVP.Promise((resolve) => {
         setTimeout(() => {
           Ember.setProperties(this.get('user'), newData);
