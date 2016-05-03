@@ -87,6 +87,20 @@ Type | HTML form | Additional attributes
 `string` | `<input type="text" />`| 
 `text` | `<textarea>` | 
 
+Each form input renders the following markup:
+
+```html
+<div class="ember-view SimpleForm-input email">
+  <label for="ember431-input">Email Address</label>
+  <div class="SimpleForm-field">
+    <input id="ember431-input" placeholder="user@example.com" type="text" class="ember-view ember-text-field">
+    <p class="SimpleForm-hint">Your email address</p>
+  </div>
+</div>
+```
+
+~~Error messages are rendered above hints, and an `invalid` class is added to the input container.~~
+
 ## Custom Form Controls
 
 `flood-simple-form` is flexible enough to allow custom form components, as long as they behave like all others.
