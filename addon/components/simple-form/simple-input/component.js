@@ -111,7 +111,8 @@ const InputComponent = Component.extend({
   actions: {
     inputValueChanged(newValue) {
       const modelAttr = this.get('modelAttr');
-      this.sendAction('on-change', modelAttr, newValue);
+      this.sendAction('on-change', newValue);
+      this.sendAction('internal-on-change', modelAttr, newValue);
     }
   }
 });
