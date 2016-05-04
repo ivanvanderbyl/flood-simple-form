@@ -13,9 +13,7 @@ moduleForComponent('simple-form/inputs/select-input', 'Integration | Component |
     ]);
 
     this.set('user', {
-      country: {
-        id: 'au',
-      }
+      country: 'au'
     });
   }
 });
@@ -50,7 +48,7 @@ test('it sends changes to form', function (assert) {
   assert.expect(2);
 
   this.on('handleFormSubmit', function(data) {
-    assert.deepEqual(data.country, {id: 'us', name: 'United States'}, 'has selected united states');
+    assert.deepEqual(data.country, 'us', 'has selected united states');
   });
 
   this.render(hbs`

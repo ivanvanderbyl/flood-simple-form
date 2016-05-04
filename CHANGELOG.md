@@ -1,9 +1,12 @@
 # Ember Changelog
 
+### 0.1.5 (May 04, 2016)
+
+- [BUGFIX] Select now returns the value of the selected option, instead of the option itself.
+
 ### 0.1.4 (May 04, 2016)
 
 - [BUGFIX] `on-change` now fires with input value as first argument and doesn't override internal value propagation.
-
 
 ### 0.1.3 (May 03, 2016)
 

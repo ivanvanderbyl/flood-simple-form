@@ -48,14 +48,9 @@ export default Component.extend({
       //if multiple, .val() returns an array. if not, it's a single value
       if (this.get('multiple')){
         let values = Ember.A(value);
-        selection = this.get('collection').filter(option => {
-          let optionVal = Ember.get(option, this.get('optionValuePath')).toString();
-          return values.contains(optionVal);
-        });
+        selection = values;
       } else {
-        selection = this.get('collection').find(option => {
-          return Ember.get(option, this.get('optionValuePath')).toString() === value;
-        });
+        selection = value;
       }
 
       if (this.getAttr('on-change')){
