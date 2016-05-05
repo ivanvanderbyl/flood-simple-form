@@ -1,5 +1,9 @@
 # Ember Changelog
 
+### 0.1.6 (May 05, 2016)
+
+- [FEATURE] Form now supports `on-change` action, which is emitted any time a form field changes. The supplied parameters are `[<attr>, <value>]`.
+
 ### 0.1.5 (May 04, 2016)
 
 - [BUGFIX] Select now returns the value of the selected option, instead of the option itself.

@@ -44,6 +44,7 @@ const SimpleFormComponent = Component.extend({
   actions: {
     inputValueChanged(modelAttr, newValue) {
       this.get('formValues').set(modelAttr, newValue);
+      this.sendAction('on-change', modelAttr, newValue);
     },
 
     submitForm() {

@@ -34,3 +34,20 @@ test('it propagates changes from initial data to form inputs', function(assert) 
 
   assert.equal(this.$('.number input').val().trim(), 'N/A', 'it renders updated number');
 });
+
+test('it emits change events when a field changes', function(assert) {
+  assert.expect(2);
+
+  this.on('handleInputValueChange', function(attr, value) {
+    assert.equal(attr, 'email', 'email field changed');
+    assert.equal(value, 'user@flood.io', 'email field changed');
+  });
+
+  this.render(hbs`
+    {{#simple-form on-change=(action "handleInputValueChange") as |f|}}
+      {{f.input "email" type="email"}}
+    {{/simple-form}}
+  `);
+
+  this.$('.email input').val('user@flood.io').change();
+});
