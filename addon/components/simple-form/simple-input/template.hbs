@@ -15,13 +15,26 @@
 {{else}}
   {{#if label}}<label for={{inputElementId}}>{{label}}</label>{{/if}}
   <div class="SimpleForm-field">
-    {{component inputComponentName
-      id=inputElementId
-      name=name
-      inputAttributes=inputAttributes
-      value=initialValue
-      on-change=(action "inputValueChanged")
-    }}
+    {{#if hasBlock}}
+      {{#component inputComponentName
+        id=inputElementId
+        name=name
+        inputAttributes=inputAttributes
+        value=initialValue
+        on-change=(action "inputValueChanged")
+        as |input|
+      }}
+        {{yield input}}
+      {{/component}}
+    {{else}}
+      {{component inputComponentName
+        id=inputElementId
+        name=name
+        inputAttributes=inputAttributes
+        value=initialValue
+        on-change=(action "inputValueChanged")
+      }}
+    {{/if}}
     {{#if hasErrors}}
       <p class="SimpleForm-errors">{{errorMessages}}</p>
     {{/if}}

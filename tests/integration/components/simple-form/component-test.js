@@ -51,3 +51,17 @@ test('it emits change events when a field changes', function(assert) {
 
   this.$('.email input').val('user@flood.io').change();
 });
+
+test('inputs support blocks', function(assert) {
+
+  this.render(hbs`
+    {{#simple-form as |f|}}
+      {{#f.input "email" type="block" as |input|}}
+        <p class="yielded">{{input.someInternalPropertyOnInput}}</p>
+      {{/f.input}}
+    {{/simple-form}}
+  `);
+
+  assert.equal(this.$('.yielded').text(), 'TEST', 'has yielded label');
+  assert.equal(this.$('p.name').text(), 'Block Dummy Component', 'has component content');
+});

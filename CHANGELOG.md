@@ -1,5 +1,9 @@
 # Ember Changelog
 
+### 0.1.7 (May 06, 2016)
+
+- [FEATURE] Added support for block components on inputs. Mainly to provide support for `ember-power-select`.
+
 ### 0.1.6 (May 05, 2016)
 
 - [FEATURE] Form now supports `on-change` action, which is emitted any time a form field changes. The supplied parameters are `[<attr>, <value>]`.
