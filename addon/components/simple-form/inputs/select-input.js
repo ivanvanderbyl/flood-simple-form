@@ -1,19 +1,13 @@
 import Ember from 'ember';
 import Component from 'ember-component';
 import layout from '../../../templates/components/simple-form/inputs/select-input';
+import InputBehaviour from 'flood-simple-form/mixins/input-behaviour';
 
-export default Component.extend({
+export default Component.extend(InputBehaviour, {
   layout,
 
   tagName: 'select',
   classNames: ['SimpleForm-select'],
-
-  didReceiveAttrs({newAttrs}) {
-    const newInputAttrs = newAttrs.inputAttributes.value || {};
-    Object.keys(newInputAttrs).forEach((key) => {
-      this.set(key, newInputAttrs[key]);
-    });
-  },
 
   optionValuePath: 'id',
   optionLabelPath: 'title',

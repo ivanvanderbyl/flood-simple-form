@@ -2,7 +2,9 @@
   input=(component "simple-form/simple-input"
     disabled=disabled
     initialValues=formValues
-    internal-on-change=(action "inputValueChanged"))
+    initialErrors=errors
+    internal-on-change=(action "inputValueChanged")
+    internal-on-change-for-validation=(action "inputValueChangedForValidation"))
 
   submit=(component "simple-form/simple-submit"
     form=elementId

@@ -1,12 +1,15 @@
 {{#if hasInlineLabel}}
-  <div class="SimpleForm-field SimpleForm-field__inline">
+  <div class="SimpleForm-field SimpleForm-field__inline {{if isInvalid "SimpleForm-field__invalid"}}">
     <label for={{inputElementId}}>
       {{#unless isInputFirst}}{{label}}{{/unless}}
       {{component inputComponentName
         id=inputElementId
         name=name
+        isValid=isValid
         inputAttributes=inputAttributes
         value=initialValue
+        focus-in=(action "inputGainedFocus")
+        focus-out=(action "inputLostFocus")
         on-change=(action "inputValueChanged")
       }}
       {{#if isInputFirst}}{{label}}{{/if}}
@@ -14,13 +17,16 @@
   </div>
 {{else}}
   {{#if label}}<label for={{inputElementId}}>{{label}}</label>{{/if}}
-  <div class="SimpleForm-field">
+  <div class="SimpleForm-field {{if isInvalid "SimpleForm-field__invalid"}}">
     {{#if hasBlock}}
       {{#component inputComponentName
         id=inputElementId
         name=name
+        isValid=isValid
         inputAttributes=inputAttributes
         value=initialValue
+        focus-in=(action "inputGainedFocus")
+        focus-out=(action "inputLostFocus")
         on-change=(action "inputValueChanged")
         as |input|
       }}
@@ -30,8 +36,11 @@
       {{component inputComponentName
         id=inputElementId
         name=name
+        isValid=isValid
         inputAttributes=inputAttributes
         value=initialValue
+        focus-in=(action "inputGainedFocus")
+        focus-out=(action "inputLostFocus")
         on-change=(action "inputValueChanged")
       }}
     {{/if}}

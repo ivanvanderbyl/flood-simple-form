@@ -65,3 +65,48 @@ test('inputs support blocks', function(assert) {
   assert.equal(this.$('.yielded').text(), 'TEST', 'has yielded label');
   assert.equal(this.$('p.name').text(), 'Block Dummy Component', 'has component content');
 });
+
+test('it displays errors if present on model', function(assert) {
+  this.set('user', {
+    number: '415 000 0000',
+    errors: {
+      number: ['must start with 04']
+    }
+  });
+
+  this.render(hbs`
+    {{#simple-form user as |f|}}
+      {{f.input "number" type="tel" placeholder="(•••) ••• ••••" label="Phone Number" hint="Your Phone Number"}}
+    {{/simple-form}}
+  `);
+
+  assert.equal(this.$('.number .SimpleForm-errors').text(), 'must start with 04', 'it renders errors');
+  assert.ok(this.$('.number input').hasClass('invalid'), 'it applies an invalid class to the input');
+});
+
+test('validation lifecycle', function(assert) {
+  assert.expect(4);
+
+  let hasReceivedValidation = false;
+
+  this.on('validateField', function(attr, value){
+    hasReceivedValidation = true;
+    assert.equal(attr, 'number', 'sends correct attr');
+    assert.equal(value, "something invalid", 'sends an invalid value');
+  });
+
+  this.render(hbs`
+    {{#simple-form user on-validate=(action "validateField") as |f|}}
+      {{f.input "number" type="tel" placeholder="(•••) ••• ••••" label="Phone Number" hint="Your Phone Number"}}
+    {{/simple-form}}
+  `);
+
+  this.$('.number input').focus();
+  this.$('.number input').val('something invalid').change();
+
+  assert.equal(hasReceivedValidation, false, 'has not yet validated');
+
+  this.$('.number input').blur();
+
+  assert.equal(hasReceivedValidation, true, 'fires validation after blur');
+});

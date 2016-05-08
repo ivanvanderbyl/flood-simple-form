@@ -1,0 +1,7 @@
+.SimpleForm-errors {
+  color: red;
+}
+
+.SimpleForm-field__invalid input {
+  outline: 1px solid red;
+}
