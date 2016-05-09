@@ -1,5 +1,9 @@
 # Ember Changelog
 
+### 0.1.8 (May 09, 2016)
+
+- [#1](https://github.com/ivanvanderbyl/flood-simple-form/pull/1) Add support for `errors` on main model.
+
 ### 0.1.7 (May 06, 2016)
 
 - [FEATURE] Added support for block components on inputs. Mainly to provide support for `ember-power-select`.
