@@ -50,6 +50,8 @@ export default Ember.Controller.extend({
 
     ember install flood-simple-form
 
+Requires **Ember 2.4+**.
+
 ## Usage
 
 ```hbs
