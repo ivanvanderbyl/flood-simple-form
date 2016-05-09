@@ -22,13 +22,16 @@ _Assuming `userModel` has an `email` property:_
 {{/simple-form}}
 ```
 
-When inputs change, we automatically buffer the changes internally using `ember-buffered-proxy`. When pressing submit, the buffered changes are sent as the first parameter to the `on-submit` action.
+When inputs change, we automatically buffer the changes internally using `ember-buffered-proxy`. 
+When pressing submit, the buffered changes are sent as the first parameter to the `on-submit` action.
 
 ```hbs
 {{#simple-form userModel on-submit=(action "saveChanges") as |f|}}
   ...
 {{/simple-form}}
 ```
+
+If the `userModel` contains an `errors` property, containing an object with errors for each input key, it will automatically display the error messages below the input for that key. There is also an action you can respond to specifically for validating inputs, which will behave in a slightly more useful way than the standard `on-change` action. For example, it won't run the initial validation until the input blurs, but it will run validations on change while the input has focus after it has changed (been dirtied).
 
 If the action handling `on-submit` returns a promise, the form will disable all inputs while the promise resolves, re-enabling everything regardless of the outcome of the promise. This is useful to ensure a form is only submitted once, and ensuring consistency while changes are persisted.
 
@@ -46,6 +49,8 @@ export default Ember.Controller.extend({
 ## Installation
 
     ember install flood-simple-form
+
+Requires **Ember 2.4+**.
 
 ## Usage
 

@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Component from 'ember-component';
 import layout from './template';
 import BufferedProxy from 'ember-buffered-proxy/proxy';
+import computed from 'ember-computed';
 
 const { isPresent } = Ember;
 
@@ -26,6 +27,17 @@ const SimpleFormComponent = Component.extend({
    */
   initialValues: {},
 
+  /**
+   * If the initial values model contains an errors attribute which conforms to the
+   * Ember Data errors model, Simple Form will automatically assign the errors for
+   * each attribute to the respective input.
+   *
+   * @type {Boolean}
+   */
+  supportsErrors: computed.notEmpty('initialValues.errors'),
+
+  errors: computed.reads('initialValues.errors'),
+
   formValues: null,
 
   didReceiveAttrs() {
@@ -45,6 +57,10 @@ const SimpleFormComponent = Component.extend({
     inputValueChanged(modelAttr, newValue) {
       this.get('formValues').set(modelAttr, newValue);
       this.sendAction('on-change', modelAttr, newValue);
+    },
+
+    inputValueChangedForValidation(modelAttr, value) {
+      this.sendAction('on-validate', modelAttr, value);
     },
 
     submitForm() {

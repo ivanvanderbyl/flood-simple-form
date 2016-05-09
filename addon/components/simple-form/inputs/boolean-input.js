@@ -11,6 +11,10 @@ export default Ember.Checkbox.extend({
     });
   },
 
+  isValid: true,
+
+  classNameBindings: ['isValid:valid:invalid'],
+
   attributeBindings: ['checked'],
 
   checked: computed('value', {
