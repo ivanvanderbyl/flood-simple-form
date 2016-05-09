@@ -4,7 +4,7 @@ The DDAU (Data Down, Actions Up) form builder we use at Flood IO. It's based on 
 
 The basic design behind this is that it shouldn't make any assumptions about your model or validations, and changes should be buffered until your form data is valid. This is achieved using `ember-buffered-proxy`. 
 
-The inputs themselves are all DDAU. When a change occurs it fires an action which propagates that change up to the form component, ~~which in turn asks the model if its valid. If it isn't, an error message is shown, and if it is, you can apply these changes to your model. TBD.~~
+The inputs themselves are all DD,AU. When a change occurs it fires an action which propagates that change up to the form component, which buffers the changes internall, but also exposes them through a special validation hook, so that you can check the validity of the model using whichever validation addon you prefer.
 
 [![Build Status](https://travis-ci.org/ivanvanderbyl/flood-simple-form.svg?branch=master)](https://travis-ci.org/ivanvanderbyl/flood-simple-form)
 
@@ -106,7 +106,23 @@ Each form input renders the following markup:
 </div>
 ```
 
-~~Error messages are rendered above hints, and an `invalid` class is added to the input container.~~
+Error messages are rendered above hints, and an `invalid` class is added to the input container.
+
+## Working with validations
+
+__Please refer to the dummy app for a complete implementation of validations__
+
+`flood-simple-form` will automatically display any errors which are present on your data model's `errors` attribute, as long as they conform to a standard format similar to `DS.Errors`, where the errors object contains a key for each attribute which has messages, with the value as an array of messages. e.g.
+
+```js
+const User = Ember.Object.extend({
+  email: null,
+
+  errors: {
+    email: ["can't be blank", "must look like an email address"],
+  }
+});
+```
 
 ## Custom Form Controls
 
