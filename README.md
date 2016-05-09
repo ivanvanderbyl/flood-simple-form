@@ -1,6 +1,6 @@
 # flood-simple-form
 
-The DDAU (Data Down, Actions Up) form builder we use at Flood IO. It's based on a lot of great work by others in the Ember community, but we felt we wanted to build something more flexible slightly less opinionated about how we persist our data.
+The DDAU (Data Down, Actions Up) form builder we use at [Flood IO](https://flood.io). It's based on a lot of great work by others in the Ember community, but we felt we wanted to build something more flexible slightly less opinionated about how we persist our data.
 
 The basic design behind this is that it shouldn't make any assumptions about your model or validations, and changes should be buffered until your form data is valid. This is achieved using `ember-buffered-proxy`. 
 
