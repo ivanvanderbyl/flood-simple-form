@@ -78,7 +78,8 @@ This is the initial value per form submission cycle, as mentioned in the lifecyc
 #### Actions
 
 - `on-submit`: Fires when form is submitted, either by submit button or other enter key press. The first parameter sent to the action handler is an object containing only the changed attributes.
-- `on-change`: Fires when any form value changes. The first parameter sent to the action handler is an object containing only the changed attributes.
+- `on-change`: Fires when any form value changes. The supplied paramters are the `attr` which changed, and its current `value`.
+- `on-validate`: Similar to `on-change`, except only fires based on the validation life-cycle.
 
 ## Form Controls
 
