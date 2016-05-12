@@ -79,13 +79,12 @@ const InputComponent = Component.extend({
     }
   }),
 
-  errors: computed('initialErrors.@each', 'modelAttr', {
+  errors: computed('initialErrors.[]', 'modelAttr', {
     get() {
-      const errors = this.get('initialErrors');
+      const errors = this.get('initialErrors') || [];
       const modelAttr = this.get('modelAttr');
-      if (modelAttr && isPresent(errors)) {
-        return get(errors, modelAttr);
-      }
+
+      return errors.filter((error) => error.attribute === modelAttr).map((error) => error.message);
     }
   }),
 

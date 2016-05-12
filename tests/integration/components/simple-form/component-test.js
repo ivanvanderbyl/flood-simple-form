@@ -69,9 +69,10 @@ test('inputs support blocks', function(assert) {
 test('it displays errors if present on model', function(assert) {
   this.set('user', {
     number: '415 000 0000',
-    errors: {
-      number: ['must start with 04']
-    }
+    errors: [
+      { attribute: 'number', message: 'must start with 04'},
+      { attribute: 'number', message: 'cannot be blank'},
+    ]
   });
 
   this.render(hbs`
