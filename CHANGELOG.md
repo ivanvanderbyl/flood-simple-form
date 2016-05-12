@@ -1,5 +1,9 @@
 # Ember Changelog
 
+### 0.1.9 (May 12, 2016)
+
+- Changed error format to be more consistent with `DS.Errors`. Now expects `[{attribute: "someAttribute", message: "validation message"}, ...]`.
+
 ### 0.1.8 (May 09, 2016)
 
 - [#1](https://github.com/ivanvanderbyl/flood-simple-form/pull/1) Add support for `errors` on main model.
