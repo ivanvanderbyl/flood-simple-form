@@ -1,14 +1,16 @@
 {{yield (hash
-  input=(component "simple-form/simple-input"
-    disabled=disabled
-    initialValues=formValues
-    initialErrors=errors
-    internal-on-change=(action "inputValueChanged")
-    internal-on-change-for-validation=(action "inputValueChangedForValidation"))
+    input=(component "simple-form/simple-input"
+      disabled=disabled
+      initialValues=initialValues
+      initialErrors=initialValues.errors
+      internal-on-change=(action "inputValueChanged")
+      internal-on-change-for-validation=(action "inputValueChangedForValidation"))
 
-  submit=(component "simple-form/simple-submit"
-    form=elementId
-    disabled=disabled
-    action=(action "submitForm")
+    submit=(component "simple-form/simple-submit"
+      form=elementId
+      disabled=disabled
+      action=(action "submitForm")
+    )
   )
-)}}
+  initialValues
+}}

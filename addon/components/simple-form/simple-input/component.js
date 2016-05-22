@@ -13,6 +13,10 @@ const INLINE_TYPES = {
 };
 
 const DEFAULT_TYPE = 'string';
+const restrictedAttrs = ['classNames', 'type', 'hint', 'tagName',
+  'initialValues', 'initialErrors', 'internal-on-change',
+  'internal-on-change-for-validation'
+];
 
 const InputComponent = Component.extend({
   layout,
@@ -38,7 +42,7 @@ const InputComponent = Component.extend({
    *
    * @type {String}
    */
-  _value: null,
+  _internalValue: null,
 
   /**
    * The model attribute to apply to this input.
@@ -68,16 +72,6 @@ const InputComponent = Component.extend({
   }),
 
   isInputFirst: computed.alias('inline'),
-
-  initialValue: computed('initialValues.@each', 'modelAttr', {
-    get() {
-      const initialValues = this.get('initialValues');
-      const modelAttr = this.get('modelAttr');
-      if (modelAttr && isPresent(initialValues)) {
-        return get(initialValues, modelAttr);
-      }
-    }
-  }),
 
   errors: computed('initialErrors.[]', 'modelAttr', {
     get() {
@@ -137,7 +131,6 @@ const InputComponent = Component.extend({
   shouldDisplayErrors: true,
 
   didReceiveAttrs({ newAttrs }) {
-    const restrictedAttrs = ['classNames', 'type', 'hint', 'tagName', 'initialValues', 'initialErrors'];
     let inputAttributes = Object.keys(newAttrs).reduce((inputAttrs, key) => {
       if (restrictedAttrs.indexOf(key) === -1) {
         inputAttrs[key] = this.getAttr(key);
@@ -145,12 +138,19 @@ const InputComponent = Component.extend({
 
       return inputAttrs;
     }, {});
+
+    let initialValues = this.getAttr('initialValues');
+    let modelAttr = this.get('modelAttr');
+    if (modelAttr && isPresent(initialValues)) {
+      this.set('value', get(initialValues, modelAttr));
+    }
+
     this.set('inputAttributes', inputAttributes);
   },
 
   actions: {
     inputValueChanged(newValue) {
-      this.set('_value', newValue);
+      this.set('_internalValue', newValue);
       const modelAttr = this.get('modelAttr');
       const isInvalid = this.get('isInvalid');
       this.sendAction('on-change', newValue);
@@ -169,7 +169,7 @@ const InputComponent = Component.extend({
     inputLostFocus() {
       this.set('inputHasFocus', false);
       const modelAttr = this.get('modelAttr');
-      const value = this.get('_value');
+      const value = this.get('_internalValue');
       this.sendAction('internal-on-change-for-validation', modelAttr, value);
     },
   }

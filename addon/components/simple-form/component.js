@@ -25,7 +25,7 @@ const SimpleFormComponent = Component.extend({
    *
    * @type {Object}
    */
-  initialValues: {},
+  initialValues: null,
 
   /**
    * If the initial values model contains an errors attribute which conforms to the
@@ -38,14 +38,15 @@ const SimpleFormComponent = Component.extend({
 
   errors: computed.reads('initialValues.errors'),
 
-  formValues: null,
+  formValues: computed.reads('initialValues'),
 
   didReceiveAttrs() {
     this._super(...arguments);
-    let initialValues = this.getAttr('initialValues') || {};
-    let formValues = BufferedProxy.create({content: initialValues});
+  //   let initialValues = this.getAttr('initialValues') || {};
+  //   let formValues = BufferedProxy.create({content: initialValues});
 
-    this.set('formValues', formValues);
+    // this.set('formValues', formValues);
+    this.propertyDidChange('initialValues');
   },
 
   submit(event) {
@@ -55,7 +56,7 @@ const SimpleFormComponent = Component.extend({
 
   actions: {
     inputValueChanged(modelAttr, newValue) {
-      this.get('formValues').set(modelAttr, newValue);
+      // this.get('formValues').set(modelAttr, newValue);
       this.sendAction('on-change', modelAttr, newValue);
     },
 
