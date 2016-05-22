@@ -1,5 +1,9 @@
 # Flood Simple Form Changelog
 
+### 0.1.10 (May 22, 2016)
+
+- Fixed data flow issues which prevented simple-form-power-select working.
+
 ### 0.1.9 (May 12, 2016)
 
 - Changed error format to be more consistent with `DS.Errors`. Now expects `[{attribute: "someAttribute", message: "validation message"}, ...]`.
