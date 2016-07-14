@@ -1,10 +1,12 @@
 # flood-simple-form
 
-The DDAU (Data Down, Actions Up) form builder we use at [Flood IO](https://flood.io). It's based on a lot of great work by others in the Ember community, but we felt we wanted to build something more flexible slightly less opinionated about how we persist our data.
+The DDAU (Data Down, Actions Up) form builder we use at [Flood IO](https://flood.io). It's based on a lot of great work by others in the Ember community, but we felt we needed something more flexible and slightly less opinionated about how data is persisted.
 
-The basic design behind this is that it shouldn't make any assumptions about your model or validations, and changes should be buffered until your form data is valid. This is achieved using `ember-buffered-proxy`. 
+The basic principle behind this is to borrow a similar syntax to Simple Form from the Rails world, and apply an intermediate change layer using [`ember-changeset`](https://github.com/DockYard/ember-changeset).
 
-The inputs themselves are all DD,AU. When a change occurs it fires an action which propagates that change up to the form component, which buffers the changes internall, but also exposes them through a special validation hook, so that you can check the validity of the model using whichever validation addon you prefer.
+The inputs themselves are all DD,AU. When a change occurs it fires an action which propagates that change up to the form component, where the value is assigned to the `changeset`, which also fires the validations so you get realtime feedback as fields change.
+
+When the form is submitted, you can choose how you persist the changeset, but typically you would just call `changeset.save()`.
 
 [![Build Status](https://travis-ci.org/ivanvanderbyl/flood-simple-form.svg?branch=master)](https://travis-ci.org/ivanvanderbyl/flood-simple-form)
 
@@ -12,35 +14,26 @@ The inputs themselves are all DD,AU. When a change occurs it fires an action whi
 
 `flood-simple-form` is implemented with certain life cycle behaviours, designed to provide a consistent user experience.
 
-Initially, all form inputs are supplied with initial values, which are not mutated when fields change.
+To start, create a form and supply a `changeset` as the first argument. The underlying model can be an [`Ember.Object`, `DS.Model` or POJO](https://github.com/DockYard/ember-changeset#philosophy), and on submit all changes will be applied to this
+object if the changeset is valid.
 
-_Assuming `userModel` has an `email` property:_
+_Assuming `user` has an `email` property:_
 
 ```hbs
-{{#simple-form userModel as |f|}}
+{{#simple-form (changeset user (action "validate") as |f|}}
   {{f.input "email" placeholder="user@example.com" label="Email Address"}}
 {{/simple-form}}
 ```
 
-When inputs change, we automatically buffer the changes internally using `ember-buffered-proxy`. 
-When pressing submit, the buffered changes are sent as the first parameter to the `on-submit` action.
-
-```hbs
-{{#simple-form userModel on-submit=(action "saveChanges") as |f|}}
-  ...
-{{/simple-form}}
-```
-
-If the `userModel` contains an `errors` property, containing an object with errors for each input key, it will automatically display the error messages below the input for that key. There is also an action you can respond to specifically for validating inputs, which will behave in a slightly more useful way than the standard `on-change` action. For example, it won't run the initial validation until the input blurs, but it will run validations on change while the input has focus after it has changed (been dirtied).
+`flood-simple-form` supports errors from `ember-changeset`, so you can easily propagate errors from the server and client side validations.
 
 If the action handling `on-submit` returns a promise, the form will disable all inputs while the promise resolves, re-enabling everything regardless of the outcome of the promise. This is useful to ensure a form is only submitted once, and ensuring consistency while changes are persisted.
 
 ```js
 export default Ember.Controller.extend({
   actions: {
-    saveChanges(changedAttrs) {
-      this.get('user').setProperties(changedAttrs)
-      return this.get('user').save();
+    saveChanges(changeset) {
+      return changeset.save();
     }
   }
 });
@@ -56,10 +49,7 @@ Requires **Ember 2.4+**.
 
 ```hbs
 {{#simple-form 
-  initialValues=(hash 
-    email="ivan@example.com"
-    country="au"
-  )
+  (changeset user (action "validate"))
   on-submit=(action "createUser") as |f|}}
 
   {{f.input "email" placeholder="user@example.com" label="Email Address"}}
@@ -68,6 +58,24 @@ Requires **Ember 2.4+**.
   
   {{f.submit "Create User"}}
 {{/simple-form}}
+```
+
+```js
+export default Controller.extend({
+	actions: {
+		validate({key, newValue}) {
+			// Validation logic, must return `true` or an error message.
+		},
+		
+		createUser(changeset) {
+			return changeset.save().catch(() => {
+				get(this, 'model.errors').forEach(({ attribute, message }) => {
+					changeset.addError(attribute, { validation: message });
+				});
+			})
+		}
+	}
+});
 ```
 
 ### `simple-form`
@@ -79,7 +87,6 @@ This is the initial value per form submission cycle, as mentioned in the lifecyc
 
 - `on-submit`: Fires when form is submitted, either by submit button or other enter key press. The first parameter sent to the action handler is an object containing only the changed attributes.
 - `on-change`: Fires when any form value changes. The supplied paramters are the `attr` which changed, and its current `value`.
-- `on-validate`: Similar to `on-change`, except only fires based on the validation life-cycle.
 
 ## Form Controls
 
