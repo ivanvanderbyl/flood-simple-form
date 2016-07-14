@@ -1,5 +1,10 @@
 # Flood Simple Form Changelog
 
+### 0.2.0 (July 14, 2016)
+
+- Removed support for buffer (breaking)
+- Added support for Ember Changeset
+
 ### 0.1.10 (May 22, 2016)
 
 - Fixed data flow issues which prevented simple-form-power-select working.
