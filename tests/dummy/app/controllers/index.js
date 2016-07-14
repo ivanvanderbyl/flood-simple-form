@@ -1,47 +1,67 @@
 import Ember from 'ember';
 import computed from 'ember-computed';
-import { validator, buildValidations } from 'ember-cp-validations';
-import formBufferProperty from 'ember-validated-form-buffer';
+import {
+  validatePresence,
+  validateLength,
+  validateFormat,
+  validateInclusion,
+} from 'ember-changeset-validations/validators';
 
-const Validations = buildValidations({
-  email: validator('presence', true),
-  number: {
-    description: 'Phone number',
-    validators: [
-      validator('presence', true),
-      validator('length', {
-        min: 10,
-        max: 12,
-      }),
-    ]
-  },
-  country: validator('presence', true),
-});
+const validations = {
+  email: [
+    validatePresence(true),
+    validateFormat('email'),
+  ],
+  number: [
+    validatePresence(true),
+    validateLength({ min: 8, max: 12 }),
+  ],
+  country: validatePresence(true),
+  isAdmin: [
+    validateInclusion({ list: [true] }),
+  ],
+};
 
 export default Ember.Controller.extend({
-
-  data: formBufferProperty('user', Validations, {
-    errors: computed.alias('displayErrors'),
-  }),
-
   user: {
     email: 'user@example.com',
     number: '',
-    country: {id: 'au', name: 'Australia'}
+    country: { id: 'au', name: 'Australia' },
+    isAdmin: false,
   },
 
   countries: [
-    {id: 'au', name: 'Australia'},
-    {id: 'us', name: 'United States'},
-    {id: 'nz', name: 'New Zealand'},
+    { id: 'au', name: 'Australia' },
+    { id: 'us', name: 'United States' },
+    { id: 'nz', name: 'New Zealand' },
   ],
 
   actions: {
+    validate({ key, newValue }) {
+      let validationsForKey = validations[key];
+
+      if (Ember.typeOf(validationsForKey) !== 'array') {
+        validationsForKey = [validationsForKey];
+      }
+
+      let i = -1;
+      let isValid = true;
+      while (++i < validationsForKey.length && isValid === true) {
+        let validatorFn = validationsForKey[i];
+        if (Ember.typeOf(validatorFn) === 'function') {
+          isValid = validatorFn(key, newValue);
+        }else {
+          isValid = true;
+        }
+      }
+
+      return isValid;
+    },
+
     saveChanges(newData) {
       return new Ember.RSVP.Promise((resolve) => {
         setTimeout(() => {
           Ember.setProperties(this.get('user'), newData);
-          this.propertyDidChange('user');
           resolve();
         }, 1e3);
       });
@@ -49,6 +69,6 @@ export default Ember.Controller.extend({
 
     validateUser(attr, value) {
       this.get('data').set(attr, value);
-    }
-  }
+    },
+  },
 });

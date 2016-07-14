@@ -7,13 +7,13 @@ export default Ember.Mixin.create({
 
   classNameBindings: ['isValid:valid:invalid'],
 
-  didReceiveAttrs({newAttrs}) {
+  didReceiveAttrs({ newAttrs }) {
     const newInputAttrs = newAttrs.inputAttributes.value || {};
     Object.keys(newInputAttrs).forEach((key) => {
       this.set(key, newInputAttrs[key]);
     });
 
-    this._super({newAttrs});
+    this._super({ newAttrs });
   },
 
   focusIn() {
@@ -22,5 +22,5 @@ export default Ember.Mixin.create({
 
   focusOut() {
     this.sendAction('focus-out');
-  }
+  },
 });

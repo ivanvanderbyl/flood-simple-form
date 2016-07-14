@@ -2,7 +2,7 @@
   Demonstrates use of <pre>flood-simple-form</pre>. There's a 1 second delay on resolving the save promise to simulate latency, and show that we disable the form while saving.
 </p>
 
-{{#simple-form data on-submit=(action "saveChanges") on-validate=(action "validateUser") as |f|}}
+{{#simple-form (changeset user (action "validate")) on-submit=(action "saveChanges") as |f|}}
 
   {{f.input "number" type="tel" placeholder="(•••) ••• ••••" label="Phone Number" hint="Your Phone Number"}}
   {{f.input "email" placeholder="user@example.com" label="Email Address"}}
@@ -32,7 +32,7 @@
     <dd>{{if user.country.name user.country.name user.country.firstObject.name}}</dd>
 
     <dt>Is Admin</dt>
-    <dd>{{user.isAdmin}}</dd>
+    <dd>{{if user.isAdmin "YES" "NO"}}</dd>
 
   </dl>
 </div>

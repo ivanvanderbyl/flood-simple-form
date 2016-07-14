@@ -1,16 +1,18 @@
 {{yield (hash
     input=(component "simple-form/simple-input"
       disabled=disabled
-      initialValues=initialValues
-      initialErrors=initialValues.errors
-      internal-on-change=(action "inputValueChanged")
-      internal-on-change-for-validation=(action "inputValueChangedForValidation"))
+      changeset=changeset
+      internal-on-change=(action "inputValueChanged"))
 
     submit=(component "simple-form/simple-submit"
       form=elementId
       disabled=disabled
       action=(action "submitForm")
     )
+    rollback=(component "simple-form/simple-submit"
+      disabled=disabled
+      action=(action "rollback")
+    )
   )
-  initialValues
+  changeset
 }}

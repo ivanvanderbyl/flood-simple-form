@@ -20,10 +20,11 @@ export default Component.extend(InputBehaviour, {
 
   attributeBindings: ['multiple', 'disabled'],
 
-  sortArray: Ember.computed('sortBy', function(){
-    if (this.get('sortBy')){
+  sortArray: Ember.computed('sortBy', function () {
+    if (this.get('sortBy')) {
       return this.get('sortBy').replace(' ', '').split(',');
     }
+
     return [];
   }),
 
@@ -35,22 +36,19 @@ export default Component.extend(InputBehaviour, {
   },
 
   actions: {
-    onChange(target){
-      let value = Ember.$(target).val(),
-          selection;
+    onChange(target) {
+      let value = Ember.$(target).val();
+      let selection;
 
       //if multiple, .val() returns an array. if not, it's a single value
-      if (this.get('multiple')){
+      if (this.get('multiple')) {
         let values = Ember.A(value);
         selection = values;
       } else {
         selection = value;
       }
 
-      if (this.getAttr('on-change')){
-        this.getAttr('on-change')(selection);
-      }
-
+      this.sendAction('on-change', selection);
     },
-  }
+  },
 });

@@ -21,7 +21,7 @@ export default Ember.Checkbox.extend({
     get() {
       const value = this.get('value');
       return !!value;
-    }
+    },
   }),
 
   change(event) {

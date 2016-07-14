@@ -14,6 +14,12 @@
       }}
       {{#if isInputFirst}}{{label}}{{/if}}
     </label>
+    {{#if hasErrors}}
+      <p class="SimpleForm-errors">{{errorMessages}}</p>
+    {{/if}}
+    {{#if hasHint}}
+      <p class="SimpleForm-hint">{{hintMessage}}</p>
+    {{/if}}
   </div>
 {{else}}
   {{#if label}}<label for={{inputElementId}}>{{label}}</label>{{/if}}

@@ -14,8 +14,7 @@ const INLINE_TYPES = {
 
 const DEFAULT_TYPE = 'string';
 const restrictedAttrs = ['classNames', 'type', 'hint', 'tagName',
-  'initialValues', 'initialErrors', 'internal-on-change',
-  'internal-on-change-for-validation'
+  'changeset', 'errors', 'internal-on-change',
 ];
 
 const InputComponent = Component.extend({
@@ -25,8 +24,7 @@ const InputComponent = Component.extend({
   classNames: ['SimpleForm-input'],
   classNameBindings: ['_inputClassName'],
 
-  initialValues: {},
-  initialErrors: {},
+  changeset: {},
 
   /**
    * The underlying input type (name of component to render).
@@ -38,13 +36,6 @@ const InputComponent = Component.extend({
   type: DEFAULT_TYPE,
 
   /**
-   * Used internally for validation lifecycle
-   *
-   * @type {String}
-   */
-  _internalValue: null,
-
-  /**
    * The model attribute to apply to this input.
    *
    * This will be used to supply the current value to the input, and when the input
@@ -53,8 +44,8 @@ const InputComponent = Component.extend({
    * @type {String}
    */
   modelAttr: null,
-  hasErrors: computed.notEmpty('errors'),
 
+  hasErrors: computed.notEmpty('errorsForInput'),
   hint: null,
   hasHint: computed.notEmpty('hint'),
   hintMessage: computed.alias('hint'),
@@ -66,54 +57,54 @@ const InputComponent = Component.extend({
    */
   inline: computed('type', {
     get() {
-      const type = this.get('type');
+      const type = get(this, 'type');
       return INLINE_TYPES[type] === true;
-    }
+    },
   }),
 
   isInputFirst: computed.alias('inline'),
 
-  errors: computed('initialErrors.[]', 'modelAttr', {
+  errorsForInput: computed('changeset.errors.[]', 'modelAttr', {
     get() {
-      const errors = this.get('initialErrors') || [];
-      const modelAttr = this.get('modelAttr');
-
-      return errors.filter((error) => error.attribute === modelAttr).map((error) => error.message);
-    }
+      const errors = get(this, 'changeset.errors') || [];
+      const modelAttr = get(this, 'modelAttr');
+      return errors.filter((error) => error.key === modelAttr);
+    },
   }),
 
-  errorMessages: computed('errors', {
+  errorMessages: computed('errorsForInput.[]', {
     get() {
-      return this.get('errors')[0];
-    }
+      const errors = get(this, 'errorsForInput');
+      return errors.map((error) => error.validation);
+    },
   }),
 
-  isValid: computed.empty('errors'),
+  isValid: computed.empty('errorsForInput'),
   isInvalid: computed.not('isValid'),
 
   inputElementId: computed('elementId', {
     get() {
-      const elementId = this.get('elementId');
+      const elementId = get(this, 'elementId');
       return `${elementId}-input`;
-    }
+    },
   }),
 
   inputComponentName: computed('type', {
     get() {
-      const type = this.get('type');
+      const type = get(this, 'type');
       return `simple-form/inputs/${type}-input`;
-    }
+    },
   }),
 
-  hasInlineLabel: computed('inline', 'label', function() {
-    return this.get('inline') && isPresent(this.get('label'));
+  hasInlineLabel: computed('inline', 'label', function () {
+    return get(this, 'inline') && isPresent(get(this, 'label'));
   }),
 
   _inputClassName: computed('modelAttr', {
     get() {
-      const modelAttr = this.get('modelAttr') || '';
+      const modelAttr = get(this, 'modelAttr') || '';
       return dasherize(modelAttr).toLowerCase();
-    }
+    },
   }),
 
   inputHasFocus: false,
@@ -139,10 +130,10 @@ const InputComponent = Component.extend({
       return inputAttrs;
     }, {});
 
-    let initialValues = this.getAttr('initialValues');
-    let modelAttr = this.get('modelAttr');
-    if (modelAttr && isPresent(initialValues)) {
-      this.set('value', get(initialValues, modelAttr));
+    let changeset = this.getAttr('changeset');
+    let modelAttr = get(this, 'modelAttr');
+    if (modelAttr && isPresent(changeset)) {
+      this.set('value', get(changeset, modelAttr));
     }
 
     this.set('inputAttributes', inputAttributes);
@@ -150,29 +141,25 @@ const InputComponent = Component.extend({
 
   actions: {
     inputValueChanged(newValue) {
-      this.set('_internalValue', newValue);
-      const modelAttr = this.get('modelAttr');
-      const isInvalid = this.get('isInvalid');
+      let modelAttr = get(this, 'modelAttr');
       this.sendAction('on-change', newValue);
       this.sendAction('internal-on-change', modelAttr, newValue);
-
-      const hasFocus = this.get('inputHasFocus');
-      if (hasFocus && isInvalid) {
-        this.sendAction('internal-on-change-for-validation', modelAttr, newValue);
-      }
     },
 
     inputGainedFocus() {
       this.set('inputHasFocus', true);
+      let value = get(this, 'value');
+      let modelAttr = get(this, 'modelAttr');
+      this.sendAction('input-focus', modelAttr, value);
     },
 
     inputLostFocus() {
       this.set('inputHasFocus', false);
-      const modelAttr = this.get('modelAttr');
-      const value = this.get('_internalValue');
-      this.sendAction('internal-on-change-for-validation', modelAttr, value);
+      let value = get(this, 'value');
+      let modelAttr = get(this, 'modelAttr');
+      this.sendAction('input-blur', modelAttr, value);
     },
-  }
+  },
 });
 
 InputComponent.reopenClass({
