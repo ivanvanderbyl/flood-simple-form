@@ -3,11 +3,14 @@ import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed';
 import isPromise from 'flood-simple-form/utils/is-promise';
-const { get } = Ember;
+import pureAssign from 'ember-changeset/utils/assign';
+const { get, set } = Ember;
 
 function isFunction(thing) {
   return Ember.typeOf(thing) === 'function';
 }
+
+const SECTIONS = '_sections';
 
 const SimpleFormComponent = Component.extend({
   layout,
@@ -19,6 +22,13 @@ const SimpleFormComponent = Component.extend({
 
   attributeBindings: ['disabled'],
 
+  [SECTIONS]: null,
+
+  init() {
+    this[SECTIONS] = new Map();
+    this._super();
+  },
+
   /**
    * Changeset to propagate changes to.
    *
@@ -26,9 +36,39 @@ const SimpleFormComponent = Component.extend({
    */
   changeset: null,
 
-  errors: computed.reads('changeset.errors'),
+  errors: computed(SECTIONS, 'changeset.errors', {
+    get() {
+      let sections = this[SECTIONS];
+      let changeset = get(this, 'changeset');
+      let errors = [];
+      let values = sections.values() || [];
 
-  formValues: computed.reads('changeset'),
+      [changeset, ...values].forEach((changeset) => {
+        errors = [...errors, ...get(changeset, 'errors')];
+      });
+
+      return errors;
+    },
+  }),
+
+  changes: computed(SECTIONS, 'changeset.changes', {
+    get() {
+      let sections = this[SECTIONS];
+      let changeset = get(this, 'changeset');
+      let changes = [];
+      let values = sections.values() || [];
+
+      [changeset, ...values].forEach((changeset) => {
+        changes = changes.concat(get(changeset, 'changes'));
+        // changes = [...changes, ...get(changeset, 'changes')];
+      });
+
+      return changes;
+    },
+  }),
+
+  isValid: computed.empty('errors'),
+  isInvalid: computed.not('isValid'),
 
   submit(event) {
     event.preventDefault();
@@ -38,7 +78,27 @@ const SimpleFormComponent = Component.extend({
   actions: {
     inputValueChanged(field, value) {
       get(this, 'changeset').set(field, value);
+      this.propertyDidChange('changeset');
       this.sendAction('on-change', get(this, 'changeset'));
+    },
+
+    inputDidBlur(/* field, value */) {
+    },
+
+    inputDidFocus(/* field, value */) {
+    },
+
+    mergeSectionChangeset({ id, changeset }) {
+      if (!this[SECTIONS].has(id)) {
+        this[SECTIONS].set(id, changeset);
+      }
+
+      this.propertyDidChange(SECTIONS);
+    },
+
+    invalidateSection({ id }) {
+      get(this, SECTIONS).delete(id);
+      this.propertyDidChange(SECTIONS);
     },
 
     rollback() {
@@ -47,10 +107,17 @@ const SimpleFormComponent = Component.extend({
     },
 
     submitForm() {
-      let changeset = get(this, 'changeset');
+      let masterChangeset = get(this, 'changeset');
+      let sections = this[SECTIONS];
+
+      let changesets = [...sections.values()];
+
+      changesets.forEach((changeset) => {
+        masterChangeset = masterChangeset.merge(changeset);
+      });
 
       if (isFunction(this.getAttr('on-submit'))) {
-        let result = this.getAttr('on-submit')(changeset);
+        let result = this.getAttr('on-submit')(masterChangeset);
         if (isPromise(result)) {
           this.set('disabled', true);
           result.then((shouldEnableForm) => {
