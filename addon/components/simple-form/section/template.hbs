@@ -1,0 +1,20 @@
+{{#if isEnabled}}
+  {{yield (hash
+    input=(component "simple-form/simple-input"
+      disabled=disabled
+      changeset=changeset
+      enter=(action "propagateEnter")
+      cancel=(action "propagateCancel")
+      internal-on-change=(action "inputValueChanged")
+    )
+
+    section=(component "simple-form/section"
+      form=form
+      disabled=disabled
+      internal-on-change=(action "mergeSectionChangeset" )
+      internal-invalidate-section=(action "invalidateSection")
+    )
+  )
+  changeset
+  }}
+{{/if}}
