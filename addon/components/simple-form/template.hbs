@@ -2,7 +2,17 @@
     input=(component "simple-form/simple-input"
       disabled=disabled
       changeset=changeset
-      internal-on-change=(action "inputValueChanged"))
+      internal-input-focus=(action "inputDidFocus")
+      internal-input-blur=(action "inputDidBlur")
+      internal-on-change=(action "inputValueChanged")
+    )
+
+    section=(component "simple-form/section"
+      form=this
+      disabled=disabled
+      internal-on-change=(action "mergeSectionChangeset")
+      internal-invalidate-section=(action "invalidateSection")
+    )
 
     submit=(component "simple-form/simple-submit"
       form=elementId
@@ -13,6 +23,12 @@
       disabled=disabled
       action=(action "rollback")
     )
+
+    errors=errors
+    changes=changes
+    isValid=isValid
+    isInvalid=isInvalid
+    isDisabled=disabled
   )
   changeset
 }}

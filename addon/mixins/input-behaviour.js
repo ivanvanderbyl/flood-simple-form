@@ -22,5 +22,5 @@ export default Ember.Mixin.create({
 
   focusOut() {
     this.sendAction('focus-out');
-  },
+  }
 });
