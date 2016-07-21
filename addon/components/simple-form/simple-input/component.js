@@ -14,7 +14,7 @@ const INLINE_TYPES = {
 
 const DEFAULT_TYPE = 'string';
 const restrictedAttrs = ['classNames', 'type', 'hint', 'tagName',
-  'changeset', 'errors', 'internal-on-change',
+  'changeset', 'errors', 'internal-on-change', 'internal-on-change',
 ];
 
 const InputComponent = Component.extend({
@@ -25,6 +25,8 @@ const InputComponent = Component.extend({
   classNameBindings: ['_inputClassName'],
 
   changeset: {},
+
+  inputAttributes: {},
 
   /**
    * The underlying input type (name of component to render).
@@ -132,6 +134,7 @@ const InputComponent = Component.extend({
 
     let changeset = this.getAttr('changeset');
     let modelAttr = get(this, 'modelAttr');
+
     if (modelAttr && isPresent(changeset)) {
       this.set('value', get(changeset, modelAttr));
     }
@@ -142,14 +145,15 @@ const InputComponent = Component.extend({
   actions: {
     inputValueChanged(newValue) {
       let modelAttr = get(this, 'modelAttr');
-      this.sendAction('on-change', newValue);
       this.sendAction('internal-on-change', modelAttr, newValue);
+      this.sendAction('on-change', newValue);
     },
 
     inputGainedFocus() {
       this.set('inputHasFocus', true);
       let value = get(this, 'value');
       let modelAttr = get(this, 'modelAttr');
+      this.sendAction('internal-input-focus', modelAttr, value);
       this.sendAction('input-focus', modelAttr, value);
     },
 
@@ -157,6 +161,7 @@ const InputComponent = Component.extend({
       this.set('inputHasFocus', false);
       let value = get(this, 'value');
       let modelAttr = get(this, 'modelAttr');
+      this.sendAction('internal-input-blur', modelAttr, value);
       this.sendAction('input-blur', modelAttr, value);
     },
   },
