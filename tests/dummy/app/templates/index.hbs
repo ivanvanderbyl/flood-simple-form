@@ -2,20 +2,31 @@
   Demonstrates use of <pre>flood-simple-form</pre>. There's a 1 second delay on resolving the save promise to simulate latency, and show that we disable the form while saving.
 </p>
 
-{{#simple-form (changeset user (action "validate")) on-submit=(action "saveChanges") as |f|}}
+{{#simple-form (changeset user (action "validate")) on-submit=(action "saveChanges") as |f changeset|}}
 
   {{f.input "number" type="tel" placeholder="(•••) ••• ••••" label="Phone Number" hint="Your Phone Number"}}
   {{f.input "email" placeholder="user@example.com" label="Email Address"}}
-  {{f.input "email" label="Email Address" classNames="custom-class"}}
-  {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
-  {{f.input "country" type="select" multiple=true placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
   {{f.input "isAdmin" type="boolean" label="Is Admin?"}}
 
   {{#f.input "block" type="block" label="Block Input" as |input|}}
     <p class="yielded">{{input.someInternalPropertyOnInput}}</p>
   {{/f.input}}
 
-  {{f.submit "Create User"}}
+  {{f.input "collectCountry" type="boolean" label="Country?"}}
+  {{#f.section (changeset user PersonDetailValidations) isEnabled=changeset.collectCountry as |f changeset|}}
+    <fieldset>
+      <legend>Country</legend>
+      {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
+      {{f.input "email" label="Email Address" classNames="custom-class"}}
+    </fieldset>
+  {{/f.section}}
+
+  {{f.submit "Create User" disabled=(or f.isDisabled f.isInvalid) }}
+
+  <p>Errors:</p>
+  <pre>{{#each f.errors as |error|}}{{error.key}},{{/each}}</pre>
+  <p>Changes</p>
+  <pre>{{#each f.changes as |change|}}{{change.key}}={{change.value}},{{/each}}</pre>
 {{/simple-form}}
 
 <div>
@@ -29,7 +40,7 @@
     <dd>{{user.number}}</dd>
 
     <dt>Country</dt>
-    <dd>{{if user.country.name user.country.name user.country.firstObject.name}}</dd>
+    <dd>{{user.country}}</dd>
 
     <dt>Is Admin</dt>
     <dd>{{if user.isAdmin "YES" "NO"}}</dd>
