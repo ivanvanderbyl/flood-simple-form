@@ -1,7 +1,7 @@
 {{#if placeholder}}
 <option
   value=""
-  selected={{ted-select-is-equal null value}}
+  selected={{eq null value}}
   class="SimpleForm-select__placeholder">
   {{placeholder}}
 </option>
@@ -9,7 +9,7 @@
 {{#each sortedContent key="@index" as |option|}}
   <option
     value={{get option optionValuePath}}
-    selected={{ted-select-is-equal (get option optionValuePath) value}}
+    selected={{eq (get option optionValuePath) value}}
     disabled={{get option optionDisabledKey}}>
     {{get option optionLabelPath}}
   </option>
