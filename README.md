@@ -1,4 +1,5 @@
-# flood-simple-form [![Build Status](https://travis-ci.org/ivanvanderbyl/flood-simple-form.svg?branch=master)](https://travis-ci.org/ivanvanderbyl/flood-simple-form)
+# flood-simple-form [![Build Status](https://travis-ci.org/ivanvanderbyl/flood-simple-form.svg?branch=master)](https://travis-ci.org/ivanvanderbyl/flood-simple-form) [![Ember Observer Score](https://emberobserver.com/badges/flood-simple-form.svg)](https://emberobserver.com/addons/flood-simple-form)
+
 
 The DDAU (Data Down, Actions Up) form builder we use at [Flood IO](https://flood.io). It's based on a lot of great work by others in the Ember community, but we felt we needed something more flexible and slightly less opinionated about how data is persisted.
 
