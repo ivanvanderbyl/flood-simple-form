@@ -23,12 +23,12 @@ test('it renders', function(assert) {
 test('it disables the submit button on submit', function(assert) {
   this.set('user', {});
 
-  assert.expect(3);
+  assert.expect(4);
 
   let resolveHandler;
 
   this.on('slowSubmitHandler', function() {
-    return new RSVP.Promise((resolve) => resolveHandler = resolve).then((val) => console.log(val));
+    return new RSVP.Promise((resolve) => resolveHandler = resolve).then((val) => assert.ok(val, 'form submitted'));
   });
 
   this.render(hbs`
