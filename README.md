@@ -1,4 +1,4 @@
-# flood-simple-form
+# flood-simple-form [![Build Status](https://travis-ci.org/ivanvanderbyl/flood-simple-form.svg?branch=master)](https://travis-ci.org/ivanvanderbyl/flood-simple-form)
 
 The DDAU (Data Down, Actions Up) form builder we use at [Flood IO](https://flood.io). It's based on a lot of great work by others in the Ember community, but we felt we needed something more flexible and slightly less opinionated about how data is persisted.
 
@@ -7,8 +7,6 @@ The basic principle behind this is to borrow a similar syntax to Simple Form fro
 The inputs themselves are all DD,AU. When a change occurs it fires an action which propagates that change up to the form component, where the value is assigned to the `changeset`, which also fires the validations so you get realtime feedback as fields change.
 
 When the form is submitted, you can choose how you persist the changeset, but typically you would just call `changeset.save()`.
-
-[![Build Status](https://travis-ci.org/ivanvanderbyl/flood-simple-form.svg?branch=master)](https://travis-ci.org/ivanvanderbyl/flood-simple-form)
 
 ## Form lifecycle
 
