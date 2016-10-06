@@ -7,11 +7,11 @@ moduleForComponent('simple-form/inputs/boolean-input', 'Integration | Component 
 
 test('it renders', function(assert) {
   this.set('post', {
-    isPublished: false,
+    isPublished: false
   });
 
   this.render(hbs`
-    {{#simple-form post as |f|}}
+    {{#simple-form (changeset post) as |f|}}
       {{f.input "isPublished" type="boolean"}}
     {{/simple-form}}
   `);
@@ -20,7 +20,7 @@ test('it renders', function(assert) {
   assert.equal(this.$('.is-published input').prop('checked'), false, 'defaults to not checked');
 
   this.set('post', {
-    isPublished: true,
+    isPublished: true
   });
 
   assert.equal(this.$('.is-published input').prop('checked'), true, 'it renders as checked');
@@ -30,15 +30,15 @@ test('it correctly applies change events', function(assert) {
   assert.expect(1);
 
   this.set('post', {
-    isPublished: false,
+    isPublished: false
   });
 
-  this.on('saveChanges', function(newPostAttrs) {
-    assert.equal(newPostAttrs.isPublished, true, 'isPublished=true');
+  this.on('saveChanges', function(changeset) {
+    assert.equal(changeset.get('isPublished'), true, 'isPublished=true');
   });
 
   this.render(hbs`
-    {{#simple-form post on-submit=(action "saveChanges") as |f|}}
+    {{#simple-form (changeset post) on-submit=(action "saveChanges") as |f|}}
       {{f.input "isPublished" type="boolean"}}
     {{/simple-form}}
   `);

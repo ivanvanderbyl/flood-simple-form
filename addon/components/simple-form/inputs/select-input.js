@@ -3,6 +3,8 @@ import Component from 'ember-component';
 import layout from '../../../templates/components/simple-form/inputs/select-input';
 import InputBehaviour from 'flood-simple-form/mixins/input-behaviour';
 
+const { computed, $, A } = Ember;
+
 export default Component.extend(InputBehaviour, {
   layout,
 
@@ -20,7 +22,7 @@ export default Component.extend(InputBehaviour, {
 
   attributeBindings: ['multiple', 'disabled'],
 
-  sortArray: Ember.computed('sortBy', function () {
+  sortArray: computed('sortBy', function() {
     if (this.get('sortBy')) {
       return this.get('sortBy').replace(' ', '').split(',');
     }
@@ -28,27 +30,27 @@ export default Component.extend(InputBehaviour, {
     return [];
   }),
 
-  sortedContent: Ember.computed.sort('collection', 'sortArray'),
+  sortedContent: computed.sort('collection', 'sortArray'),
 
   change(event) {
-    const target = event.target;
+    let { target } = event;
     this.send('onChange', target);
   },
 
   actions: {
     onChange(target) {
-      let value = Ember.$(target).val();
+      let value = $(target).val();
       let selection;
 
-      //if multiple, .val() returns an array. if not, it's a single value
+      // if multiple, .val() returns an array. if not, it's a single value
       if (this.get('multiple')) {
-        let values = Ember.A(value);
+        let values = A(value);
         selection = values;
       } else {
         selection = value;
       }
 
       this.sendAction('on-change', selection);
-    },
-  },
+    }
+  }
 });

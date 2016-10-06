@@ -6,8 +6,12 @@ moduleForComponent('simple-form/inputs/string-input', 'Integration | Component |
 });
 
 test('it renders', function(assert) {
+  this.set('post', {
+    email: null
+  });
+
   this.render(hbs`
-    {{#simple-form as |f|}}
+    {{#simple-form (changeset post) as |f|}}
       {{f.input "email" placeholder="Email" label="Email Address" type="string"}}
     {{/simple-form}}
   `);

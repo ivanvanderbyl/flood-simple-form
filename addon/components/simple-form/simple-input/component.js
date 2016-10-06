@@ -5,16 +5,16 @@ import computed from 'ember-computed';
 const {
   get,
   isPresent,
-  String: { dasherize },
+  String: { dasherize }
 } = Ember;
 
 const INLINE_TYPES = {
-  boolean: true,
+  boolean: true
 };
 
 const DEFAULT_TYPE = 'string';
 const restrictedAttrs = ['classNames', 'type', 'hint', 'tagName',
-  'changeset', 'errors', 'internal-on-change', 'internal-on-change',
+  'changeset', 'errors', 'internal-on-change', 'internal-on-change'
 ];
 
 const InputComponent = Component.extend({
@@ -33,6 +33,7 @@ const InputComponent = Component.extend({
    *
    * SimpleForm will look for any component in the path `simple-form/inputs/{type}-input`
    *
+   * @public
    * @type {String}
    */
   type: DEFAULT_TYPE,
@@ -43,6 +44,7 @@ const InputComponent = Component.extend({
    * This will be used to supply the current value to the input, and when the input
    * fires an on-change action, it will eventually be propagated as `{modelAttr}: {value}`.
    *
+   * @public
    * @type {String}
    */
   modelAttr: null,
@@ -55,30 +57,31 @@ const InputComponent = Component.extend({
   /**
    * Display label inline with input element.
    *
+   * @public
    * @type {Boolean}
    */
   inline: computed('type', {
     get() {
-      const type = get(this, 'type');
+      let type = get(this, 'type');
       return INLINE_TYPES[type] === true;
-    },
+    }
   }),
 
   isInputFirst: computed.alias('inline'),
 
   errorsForInput: computed('changeset.errors.[]', 'modelAttr', {
     get() {
-      const errors = get(this, 'changeset.errors') || [];
-      const modelAttr = get(this, 'modelAttr');
+      let errors = get(this, 'changeset.errors') || [];
+      let modelAttr = get(this, 'modelAttr');
       return errors.filter((error) => error.key === modelAttr);
-    },
+    }
   }),
 
   errorMessages: computed('errorsForInput.[]', {
     get() {
-      const errors = get(this, 'errorsForInput');
+      let errors = get(this, 'errorsForInput');
       return errors.map((error) => error.validation);
-    },
+    }
   }),
 
   isValid: computed.empty('errorsForInput'),
@@ -86,27 +89,27 @@ const InputComponent = Component.extend({
 
   inputElementId: computed('elementId', {
     get() {
-      const elementId = get(this, 'elementId');
+      let elementId = get(this, 'elementId');
       return `${elementId}-input`;
-    },
+    }
   }),
 
   inputComponentName: computed('type', {
     get() {
-      const type = get(this, 'type');
+      let type = get(this, 'type');
       return `simple-form/inputs/${type}-input`;
-    },
+    }
   }),
 
-  hasInlineLabel: computed('inline', 'label', function () {
+  hasInlineLabel: computed('inline', 'label', function() {
     return get(this, 'inline') && isPresent(get(this, 'label'));
   }),
 
   _inputClassName: computed('modelAttr', {
     get() {
-      const modelAttr = get(this, 'modelAttr') || '';
+      let modelAttr = get(this, 'modelAttr') || '';
       return dasherize(modelAttr).toLowerCase();
-    },
+    }
   }),
 
   inputHasFocus: false,
@@ -119,6 +122,8 @@ const InputComponent = Component.extend({
    * 2. When a field starts off as empty, don't validate until it blurs after having focus,
    * 3. When a field has errors and gains focus, validate on all change events.
    *
+   * @deprecated This isn't needed with validated changesets
+   * @private
    * @type {Boolean}
    */
   shouldDisplayErrors: true,
@@ -163,12 +168,12 @@ const InputComponent = Component.extend({
       let modelAttr = get(this, 'modelAttr');
       this.sendAction('internal-input-blur', modelAttr, value);
       this.sendAction('input-blur', modelAttr, value);
-    },
-  },
+    }
+  }
 });
 
 InputComponent.reopenClass({
-  positionalParams: ['modelAttr'],
+  positionalParams: ['modelAttr']
 });
 
 export default InputComponent;

@@ -6,9 +6,13 @@ moduleForComponent('simple-form/inputs/number-input', 'Integration | Component |
 });
 
 test('it renders', function(assert) {
+  this.set('post', {
+    numberOfPeople: 0
+  });
+
   this.render(hbs`
-    {{#simple-form as |f|}}
-      {{f.input "password" type="number"}}
+    {{#simple-form (changeset post) as |f|}}
+      {{f.input "numberOfPeople" type="number"}}
     {{/simple-form}}
   `);
 

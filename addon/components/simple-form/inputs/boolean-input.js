@@ -1,12 +1,14 @@
 import Ember from 'ember';
 import computed from 'ember-computed';
 
-export default Ember.Checkbox.extend({
+const { Checkbox } = Ember;
+const { keys } = Object;
+export default Checkbox.extend({
   inputAttributes: {},
 
   didReceiveAttrs() {
-    const newInputAttrs = this.getAttr('inputAttributes') || {};
-    Object.keys(newInputAttrs).forEach((key) => {
+    let newInputAttrs = this.getAttr('inputAttributes') || {};
+    keys(newInputAttrs).forEach((key) => {
       this.set(key, newInputAttrs[key]);
     });
   },
@@ -19,13 +21,13 @@ export default Ember.Checkbox.extend({
 
   checked: computed('value', {
     get() {
-      const value = this.get('value');
+      let value = this.get('value');
       return !!value;
-    },
+    }
   }),
 
   change(event) {
     this._super(event);
     this.sendAction('on-change', this.get('checked'));
-  },
+  }
 });

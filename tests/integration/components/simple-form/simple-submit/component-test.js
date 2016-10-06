@@ -2,13 +2,17 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 
+const { RSVP, run } = Ember;
+
 moduleForComponent('simple-form/simple-submit', 'Integration | Component | simple form/simple submit', {
   integration: true
 });
 
 test('it renders', function(assert) {
+  this.set('user', {});
+
   this.render(hbs`
-    {{#simple-form as |f|}}
+    {{#simple-form (changeset user) as |f|}}
       {{f.submit "Save Changes"}}
     {{/simple-form}}
   `);
@@ -17,16 +21,18 @@ test('it renders', function(assert) {
 });
 
 test('it disables the submit button on submit', function(assert) {
+  this.set('user', {});
+
   assert.expect(3);
 
   let resolveHandler;
 
   this.on('slowSubmitHandler', function() {
-    return new Ember.RSVP.Promise((resolve) => resolveHandler = resolve).then((val) => console.log(val));
+    return new RSVP.Promise((resolve) => resolveHandler = resolve).then((val) => console.log(val));
   });
 
   this.render(hbs`
-    {{#simple-form on-submit=(action "slowSubmitHandler") as |f|}}
+    {{#simple-form (changeset user) on-submit=(action "slowSubmitHandler") as |f|}}
       {{f.submit "Save Changes"}}
     {{/simple-form}}
   `);
@@ -34,11 +40,11 @@ test('it disables the submit button on submit', function(assert) {
   assert.equal(this.$('form button').attr('disabled'), undefined, 'button is not disabled');
   this.$('form button').click();
   assert.equal(this.$('form button').attr('disabled'), 'disabled', 'button is disabled');
-  Ember.run(() => {
+  run(() => {
     resolveHandler(true);
   });
 
-  Ember.run.next(() => {
+  run.next(() => {
     assert.equal(this.$('form button').attr('disabled'), undefined, 'button is not disabled');
   });
 });

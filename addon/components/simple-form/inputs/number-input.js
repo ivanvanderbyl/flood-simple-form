@@ -5,5 +5,5 @@ export default StringInputComponent.extend({
 
   min: null,
 
-  max: null,
+  max: null
 });

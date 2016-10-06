@@ -3,11 +3,11 @@ import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed';
 import isPromise from 'flood-simple-form/utils/is-promise';
-import pureAssign from 'ember-changeset/utils/assign';
-const { get, set } = Ember;
+// import pureAssign from 'ember-changeset/utils/assign';
+const { assert, isPresent, get, typeOf } = Ember;
 
 function isFunction(thing) {
-  return Ember.typeOf(thing) === 'function';
+  return typeOf(thing) === 'function';
 }
 
 const SECTIONS = '_sections';
@@ -32,6 +32,8 @@ const SimpleFormComponent = Component.extend({
   /**
    * Changeset to propagate changes to.
    *
+   * @isFunction(thing);
+   * @public
    * @type {EmberChangeset}
    */
   changeset: null,
@@ -43,12 +45,14 @@ const SimpleFormComponent = Component.extend({
       let errors = [];
       let values = sections.values() || [];
 
+      assert('changeset must be set when creating a simple-form', isPresent(changeset));
+
       [changeset, ...values].forEach((changeset) => {
         errors = [...errors, ...get(changeset, 'errors')];
       });
 
       return errors;
-    },
+    }
   }),
 
   changes: computed(SECTIONS, 'changeset.changes', {
@@ -64,7 +68,7 @@ const SimpleFormComponent = Component.extend({
       });
 
       return changes;
-    },
+    }
   }),
 
   isValid: computed.empty('errors'),
@@ -127,13 +131,13 @@ const SimpleFormComponent = Component.extend({
           }, () => this.set('disabled', false));
         }
       }
-    },
-  },
+    }
+  }
 
 });
 
 SimpleFormComponent.reopenClass({
-  positionalParams: ['changeset'],
+  positionalParams: ['changeset']
 });
 
 export default SimpleFormComponent;

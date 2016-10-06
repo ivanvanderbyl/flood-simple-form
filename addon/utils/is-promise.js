@@ -3,7 +3,8 @@ import Ember from 'ember';
 const { typeOf } = Ember;
 
 function isPromiseLike(obj = {}) {
-  return typeOf(obj.then) === 'function' &&
+  return !!obj &&
+    typeOf(obj.then) === 'function' &&
     typeOf(obj.catch) === 'function' &&
     typeOf(obj.finally) === 'function';
 }

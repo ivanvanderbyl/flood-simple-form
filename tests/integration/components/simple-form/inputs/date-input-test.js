@@ -6,8 +6,12 @@ moduleForComponent('simple-form/inputs/date-input', 'Integration | Component | s
 });
 
 test('it renders', function(assert) {
+  this.set('post', {
+    publishedOn: null
+  });
+
   this.render(hbs`
-    {{#simple-form as |f|}}
+    {{#simple-form (changeset post) as |f|}}
       {{f.input "publishOn" type="date"}}
     {{/simple-form}}
   `);

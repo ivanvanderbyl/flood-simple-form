@@ -4,9 +4,10 @@ import { module, test } from 'qunit';
 
 module('Unit | Mixin | input behaviour');
 
-// Replace this with your real tests.
+const { Object:EO } = Ember;
+
 test('it works', function(assert) {
-  let InputBehaviourObject = Ember.Object.extend(InputBehaviourMixin);
+  let InputBehaviourObject = EO.extend(InputBehaviourMixin);
   let subject = InputBehaviourObject.create();
   assert.ok(subject);
 });

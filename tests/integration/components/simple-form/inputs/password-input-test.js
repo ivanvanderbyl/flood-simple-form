@@ -6,8 +6,12 @@ moduleForComponent('simple-form/inputs/password-input', 'Integration | Component
 });
 
 test('it renders', function(assert) {
+  this.set('user', {
+    password: null
+  });
+
   this.render(hbs`
-    {{#simple-form as |f|}}
+    {{#simple-form (changeset user) as |f|}}
       {{f.input "password" type="password"}}
     {{/simple-form}}
   `);

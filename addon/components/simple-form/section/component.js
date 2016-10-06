@@ -2,7 +2,7 @@ import Ember from 'ember';
 import layout from './template';
 import Component from 'ember-component';
 
-const { get, set, observer } = Ember;
+const { get, observer } = Ember;
 
 const SectionComponent = Component.extend({
   layout,
@@ -14,7 +14,7 @@ const SectionComponent = Component.extend({
 
   form: null,
 
-  isEnabledDidChange: observer('isEnabled', function () {
+  isEnabledDidChange: observer('isEnabled', function() {
     let isEnabled = get(this, 'isEnabled');
     if (!isEnabled) {
       let changeset = get(this, 'changeset');
@@ -51,13 +51,13 @@ const SectionComponent = Component.extend({
 
     propagateCancel() {
       this.sendAction('cancel', ...arguments);
-    },
+    }
 
-  },
+  }
 });
 
 SectionComponent.reopenClass({
-  positionalParams: ['changeset', 'isEnabled'],
+  positionalParams: ['changeset', 'isEnabled']
 });
 
 export default SectionComponent;

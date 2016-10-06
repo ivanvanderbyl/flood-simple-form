@@ -1,6 +1,8 @@
-import Ember from 'ember';
+import Mixin from 'ember-metal/mixin';
 
-export default Ember.Mixin.create({
+const { keys } = Object;
+
+export default Mixin.create({
   inputAttributes: {},
 
   isValid: true,
@@ -8,8 +10,8 @@ export default Ember.Mixin.create({
   classNameBindings: ['isValid:valid:invalid'],
 
   didReceiveAttrs({ newAttrs }) {
-    const newInputAttrs = newAttrs.inputAttributes.value || {};
-    Object.keys(newInputAttrs).forEach((key) => {
+    let newInputAttrs = newAttrs.inputAttributes.value || {};
+    keys(newInputAttrs).forEach((key) => {
       this.set(key, newInputAttrs[key]);
     });
 

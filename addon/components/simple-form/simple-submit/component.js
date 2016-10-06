@@ -12,6 +12,7 @@ const SubmitComponent = Component.extend({
   /**
    * The <form> ID
    *
+   * @protected
    * @type {String}
    */
   form: null,
@@ -25,7 +26,7 @@ const SubmitComponent = Component.extend({
 });
 
 SubmitComponent.reopenClass({
-  positionalParams: ['label'],
+  positionalParams: ['label']
 });
 
 export default SubmitComponent;
