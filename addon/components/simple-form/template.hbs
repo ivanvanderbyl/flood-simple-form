@@ -1,9 +1,11 @@
 {{#simple-form/section
   form=this
   changeset=changeset
+  tagName="form"
   disabled=disabled
   _change=(action "mergeSubChangeset")
   _remove=(action "removeSubChangeset")
+  onsubmit=(action "submitForm")
 as |f changeset|}}
   {{yield (hash
     errors=errors

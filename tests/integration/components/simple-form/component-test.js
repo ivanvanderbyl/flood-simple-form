@@ -30,6 +30,7 @@ test('it renders a form', function(assert) {
     {{/simple-form}}
   `);
 
+  assert.equal(this.$('.SimpleForm form').length, 1, 'first section is presented as a form tag');
   assert.equal(this.$('.number p.SimpleForm-hint').text().trim(), 'Your Phone Number', 'it renders a hint');
 });
 

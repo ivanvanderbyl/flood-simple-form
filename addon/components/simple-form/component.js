@@ -15,7 +15,7 @@ const SECTIONS = '_sections';
 const SimpleFormComponent = Component.extend(MergeSupport, {
   layout,
 
-  tagName: 'form',
+  tagName: 'div',
   classNames: ['SimpleForm'],
 
   disabled: false,
