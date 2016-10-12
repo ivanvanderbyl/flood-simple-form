@@ -1,5 +1,5 @@
 import Controller from 'ember-controller';
-
+import Ember from 'ember';
 import {
   validatePresence,
   validateLength,
@@ -36,13 +36,16 @@ const AddressValidations = {
   street: [validatePresence(true)]
 };
 
+const { Logger } = Ember;
+
 export default Controller.extend({
   UserValidations,
   PersonDetailValidations,
   AddressValidations,
 
   actions: {
-    handleFormSubmit(/* changeset */) {
+    handleFormSubmit(changeset) {
+      Logger.log(changeset.get('change'));
     }
   }
 });

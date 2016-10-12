@@ -14,13 +14,25 @@ const SectionComponent = Component.extend(MergeSupport, {
   form: null,
 
   /**
+   * Indicates that we should keep this around even when not showing the section.
+   *
+   * @public
+   * @type {Boolean}
+   */
+  isNeeded: false,
+
+  /**
    * Called before this section is disabled
    * @public
    */
   sectionWillDisable() {
     let changeset = get(this, 'changeset');
-    changeset.rollback();
-    this.sendAction(REMOVE_ACTION, { id: guidFor(changeset) });
+    let isNeeded = get(this, 'isNeeded');
+
+    if (!isNeeded) {
+      changeset.rollback();
+      this.sendAction(REMOVE_ACTION, { id: guidFor(changeset) });
+    }
   },
 
   willDestroyElement() {

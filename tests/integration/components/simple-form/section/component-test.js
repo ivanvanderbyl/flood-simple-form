@@ -36,6 +36,34 @@ const PersonDetailValidations = {
 
 const { run } = Ember;
 
+const TEMPLATE = hbs`
+  {{#simple-form (changeset user UserValidations) on-submit=(action "handleFormSubmit") as |f changeset|}}
+    {{f.input "collectSection1" type="boolean" label="Section 1"}}
+    {{#if changeset.collectSection1}}
+      {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
+        {{f.input "fullName" label="Full name"}}
+        {{f.input "collectSection2" type="boolean" label="Section 2"}}
+
+        {{#if changeset.collectSection2}}
+          {{#f.section (changeset user AddressValidations) as |f changeset|}}
+            {{f.input "street" label="Street"}}
+          {{/f.section}}
+        {{/if}}
+
+        {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
+        {{#if changeset.collectSection2Additional}}
+          {{#f.section (changeset user AddressValidations) isNeeded=needsSection2 as |f changeset|}}
+            {{f.input "streetAdditional" label="Street (Line 2)"}}
+          {{/f.section}}
+        {{/if}}
+
+      {{/f.section}}
+    {{/if}}
+
+    {{f.submit "Save"}}
+  {{/simple-form}}
+`;
+
 moduleForComponent('simple-form/section', 'Integration | Component | simple form/section', {
   integration: true,
   beforeEach() {
@@ -50,6 +78,8 @@ moduleForComponent('simple-form/section', 'Integration | Component | simple form
       country: 'au',
       collectCountry: false
     });
+
+    this.set('needsSection2', false);
   }
 });
 
@@ -94,33 +124,7 @@ test('it supports nested sections', function(assert) {
 
   this.set('masterChangeset', new Changeset(this.get('user', UserValidations)));
 
-  this.render(hbs`
-    {{#simple-form masterChangeset on-submit=(action "handleFormSubmit") as |f changeset|}}
-      {{f.input "collectSection1" type="boolean" label="Section 1"}}
-      {{#if changeset.collectSection1}}
-        {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
-          {{f.input "fullName" label="Full name"}}
-          {{f.input "collectSection2" type="boolean" label="Section 2"}}
-          {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
-
-          {{#if changeset.collectSection2}}
-            {{#f.section (changeset user AddressValidations) as |f changeset|}}
-              {{f.input "street" label="Street"}}
-            {{/f.section}}
-          {{/if}}
-
-          {{#if changeset.collectSection2Additional}}
-            {{#f.section (changeset user AddressValidations) as |f changeset|}}
-              {{f.input "streetAdditional" label="Street (Line 2)"}}
-            {{/f.section}}
-          {{/if}}
-
-        {{/f.section}}
-      {{/if}}
-
-      {{f.submit "Save"}}
-    {{/simple-form}}
-  `);
+  this.render(TEMPLATE);
 
   // 1. Open all sections and fill in street name
   run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
@@ -175,33 +179,7 @@ test('multiple nested sections', function(assert) {
     }
   });
 
-  this.render(hbs`
-    {{#simple-form (changeset user UserValidations) on-submit=(action "handleFormSubmit") as |f changeset|}}
-      {{f.input "collectSection1" type="boolean" label="Section 1"}}
-      {{#if changeset.collectSection1}}
-        {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
-          {{f.input "fullName" label="Full name"}}
-          {{f.input "collectSection2" type="boolean" label="Section 2"}}
-
-          {{#if changeset.collectSection2}}
-            {{#f.section (changeset user AddressValidations) as |f changeset|}}
-              {{f.input "street" label="Street"}}
-            {{/f.section}}
-          {{/if}}
-
-          {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
-          {{#if changeset.collectSection2Additional}}
-            {{#f.section (changeset user AddressValidations) as |f changeset|}}
-              {{f.input "streetAdditional" label="Street (Line 2)"}}
-            {{/f.section}}
-          {{/if}}
-
-        {{/f.section}}
-      {{/if}}
-
-      {{f.submit "Save"}}
-    {{/simple-form}}
-  `);
+  this.render(TEMPLATE);
 
   // 1. Open all sections and fill in street name
   run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
@@ -220,5 +198,37 @@ test('multiple nested sections', function(assert) {
 
   // 3. No fields
   run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('button').click());
+});
+
+test('it supports being enabled while removed from DOM', function(assert) {
+  this.set('user', {});
+  this.set('needsSection2', true);
+
+  this.on('handleFormSubmit', function(changeset) {
+    assert.deepEqual(changeset.get('change'),
+      {
+        'collectSection1': true,
+        'collectSection2': false,
+        'collectSection2Additional': false,
+        'fullName': 'John Smith',
+        'streetAdditional': 'Unit 1'
+      }, 'only contains second section');
+
+  });
+
+  this.render(TEMPLATE);
+
+  // 1. Open all sections and fill in street name
+  run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.collect-section2 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.collect-section2-additional input[type="checkbox"]').trigger('click').change());
+
+  run(() => this.$('.full-name input').val('John Smith').change());
+  run(() => this.$('.street input').val('Larnook Street').change());
+  run(() => this.$('.street-additional input').val('Unit 1').change());
+
+  run(() => this.$('.collect-section2 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.collect-section2-additional input[type="checkbox"]').trigger('click').change());
   run(() => this.$('button').click());
 });
