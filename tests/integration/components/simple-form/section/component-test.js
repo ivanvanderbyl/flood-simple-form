@@ -34,12 +34,7 @@ const PersonDetailValidations = {
   ]
 };
 
-const AddressValidations = {
-  street: [validatePresence(true)]
-};
-
 const { run } = Ember;
-const { keys } = Object;
 
 moduleForComponent('simple-form/section', 'Integration | Component | simple form/section', {
   integration: true,
@@ -59,13 +54,14 @@ moduleForComponent('simple-form/section', 'Integration | Component | simple form
 });
 
 test('it renders a section', function(assert) {
-
   this.render(hbs`
     {{#simple-form (changeset user UserValidations) as |f changeset|}}
       {{f.input "collectCountry" type="boolean" label="Country?"}}
-      {{#f.section (changeset user PersonDetailValidations) isEnabled=changeset.collectCountry as |f changeset|}}
-        {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
-      {{/f.section}}
+      {{#if changeset.collectCountry}}
+        {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
+          {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}
+        {{/f.section}}
+      {{/if}}
     {{/simple-form}}
   `);
 
@@ -89,14 +85,10 @@ test('it supports nested sections', function(assert) {
   this.on('handleFormSubmit', function(changeset) {
     submitCount++;
 
-    if (submitCount === 1) {
-      console.log('first submit', changeset.get('change'));
-    } else if (submitCount === 2) {
+    if (submitCount === 2) {
       assert.deepEqual(changeset.get('change'), { 'collectSection1': false }, 'should only contain top level changeset');
-      console.log('submit 2', changeset.get('change'));
-    } else {
+    } else if (submitCount === 3) {
       assert.deepEqual(changeset.get('change'), { collectSection1: true }, 'should collect section 1 without any attrs');
-      console.log('last submit', changeset.get('change'));
     }
   });
 
@@ -105,20 +97,26 @@ test('it supports nested sections', function(assert) {
   this.render(hbs`
     {{#simple-form masterChangeset on-submit=(action "handleFormSubmit") as |f changeset|}}
       {{f.input "collectSection1" type="boolean" label="Section 1"}}
-      {{#f.section (changeset user PersonDetailValidations) isEnabled=changeset.collectSection1 as |f changeset|}}
-        {{f.input "fullName" label="Full name"}}
-        {{f.input "collectSection2" type="boolean" label="Section 2"}}
-        {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
+      {{#if changeset.collectSection1}}
+        {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
+          {{f.input "fullName" label="Full name"}}
+          {{f.input "collectSection2" type="boolean" label="Section 2"}}
+          {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
 
-        {{#f.section (changeset user AddressValidations) isEnabled=changeset.collectSection2 as |f changeset|}}
-          {{f.input "street" label="Street"}}
+          {{#if changeset.collectSection2}}
+            {{#f.section (changeset user AddressValidations) as |f changeset|}}
+              {{f.input "street" label="Street"}}
+            {{/f.section}}
+          {{/if}}
+
+          {{#if changeset.collectSection2Additional}}
+            {{#f.section (changeset user AddressValidations) as |f changeset|}}
+              {{f.input "streetAdditional" label="Street (Line 2)"}}
+            {{/f.section}}
+          {{/if}}
+
         {{/f.section}}
-
-        {{#f.section (changeset user AddressValidations) isEnabled=changeset.collectSection2Additional as |f changeset|}}
-          {{f.input "streetAdditional" label="Street (Line 2)"}}
-        {{/f.section}}
-
-      {{/f.section}}
+      {{/if}}
 
       {{f.submit "Save"}}
     {{/simple-form}}
@@ -134,7 +132,6 @@ test('it supports nested sections', function(assert) {
   run(() => {
     assert.equal(this.$('.full-name').length, 1, 'is showing section 1');
     assert.equal(this.$('.street').length, 1, 'is showing address');
-    // console.log(this.get('masterChangeset.change'));
   });
 
   // 3. Close first section, thus removing nested section

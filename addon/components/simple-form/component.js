@@ -3,10 +3,8 @@ import Component from 'ember-component';
 import layout from './template';
 import computed from 'ember-computed';
 import isPromise from 'flood-simple-form/utils/is-promise';
-import MergeSupport, { compositeChangeset } from 'flood-simple-form/mixins/merge-support';
-
-// import pureAssign from 'ember-changeset/utils/assign';
-const { assert, isPresent, get, typeOf } = Ember;
+import MergeSupport from 'flood-simple-form/mixins/merge-support';
+const { get, typeOf } = Ember;
 
 function isFunction(thing) {
   return typeOf(thing) === 'function';
@@ -34,43 +32,7 @@ const SimpleFormComponent = Component.extend(MergeSupport, {
   changeset: null,
 
   errors: computed.reads('compositeChangeset.errors'),
-
-  // errors: computed(SECTIONS, 'changeset.errors.[]', {
-  //   get() {
-  //     let sections = this[SECTIONS];
-  //     let changeset = get(this, 'changeset');
-  //     let errors = [];
-  //     let changesets = sections.values() || [];
-
-  //     assert('changeset must be set when creating a simple-form', isPresent(changeset));
-
-  //     let allChangesets = [changeset, ...changesets];
-  //     allChangesets.forEach((changeset) => {
-  //       errors = [...errors, ...get(changeset, 'errors')];
-  //     });
-
-  //     // console.log(sections.size, allChangesets.length);
-
-  //     return errors;
-  //   }
-  // }),
-
   changes: computed.reads('compositeChangeset.changes'),
-
-  // changes: computed(SECTIONS, 'changeset.changes.[]', {
-  //   get() {
-  //     let sections = this[SECTIONS];
-  //     let changeset = get(this, 'changeset');
-  //     let changes = [];
-  //     let changesets = sections.values() || [];
-
-  //     [changeset, ...changesets].forEach((changeset) => {
-  //       changes = changes.concat(get(changeset, 'changes'));
-  //     });
-
-  //     return changes;
-  //   }
-  // }),
 
   isValid: computed.empty('errors'),
   isInvalid: computed.not('isValid'),
@@ -81,22 +43,19 @@ const SimpleFormComponent = Component.extend(MergeSupport, {
   },
 
   actions: {
+    // TODO: Rename these actions to something form specific
     inputValueChanged(field, value) {
       let changeset = get(this, 'changeset');
       changeset.set(field, value);
       this.propertyDidChange('changeset');
-      this.sendAction('on-change', get(this, 'compositeChangeset'));
     },
 
+    // TODO: Rename these actions to something form specific
     mergeSubChangeset({ id, changeset }) {
       let sections = get(this, SECTIONS);
       sections.set(id, changeset);
       this.propertyDidChange(SECTIONS);
-    },
-
-    _afterMergeSubChangeset({ id, changeset }) {
-      let compositeChangeset = this.get('compositeChangeset');
-      this.sendAction('on-change', compositeChangeset);
+      this.sendAction('on-change', get(this, 'compositeChangeset'));
     },
 
     inputDidBlur(/* field, value */) {

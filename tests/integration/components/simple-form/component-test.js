@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import {
   validatePresence,
-  validateLength,
+  validateLength
 } from 'ember-changeset-validations/validators';
 
 const { run } = Ember;
@@ -105,7 +105,7 @@ test('it displays errors if present on model', function(assert) {
   this.on('reset', (changeset) => changeset.rollback());
 
   this.render(hbs`
-    {{#simple-form (changeset user Validations) validate=(action "save") as |f|}}
+    {{#simple-form (changeset user Validations) on-submit=(action "save") as |f|}}
       {{f.input "number" type="tel"}}
       {{f.submit "Save"}}
     {{/simple-form}}
@@ -117,34 +117,3 @@ test('it displays errors if present on model', function(assert) {
   assert.equal(this.$('.number .SimpleForm-errors').text(), 'Number must be between 8 and 10 characters', 'it renders errors');
   assert.ok(this.$('.number input').hasClass('invalid'), 'it applies an invalid class to the input');
 });
-
-// test('validation lifecycle', function(assert) {
-//   assert.expect(4);
-
-//   this.set('user', {
-//     number: '415 000'
-//   });
-
-//   let hasReceivedValidation = false;
-
-//   this.on('validateField', function(attr, value) {
-//     hasReceivedValidation = true;
-//     assert.equal(attr, 'number', 'sends correct attr');
-//     assert.equal(value, 'something invalid', 'sends an invalid value');
-//   });
-
-//   this.render(hbs`
-//     {{#simple-form (changeset user) on-validate=(action "validateField") as |f|}}
-//       {{f.input "number" type="tel" placeholder="(•••) ••• ••••" label="Phone Number" hint="Your Phone Number"}}
-//     {{/simple-form}}
-//   `);
-
-//   this.$('.number input').focus();
-//   this.$('.number input').val('something invalid').change();
-
-//   assert.equal(hasReceivedValidation, false, 'has not yet validated');
-
-//   this.$('.number input').blur();
-
-//   assert.equal(hasReceivedValidation, true, 'fires validation after blur');
-// });

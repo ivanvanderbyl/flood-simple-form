@@ -1,9 +1,8 @@
 import Ember from 'ember';
 import layout from './template';
 import Component from 'ember-component';
-import MergeSupport, { SECTIONS, CHANGE_ACTION, REMOVE_ACTION } from 'flood-simple-form/mixins/merge-support';
-import Changeset from 'ember-changeset';
-const { guidFor, getWithDefault, set, get, observer, run } = Ember;
+import MergeSupport, { REMOVE_ACTION } from 'flood-simple-form/mixins/merge-support';
+const { guidFor, get } = Ember;
 
 const SectionComponent = Component.extend(MergeSupport, {
   layout,
@@ -11,8 +10,6 @@ const SectionComponent = Component.extend(MergeSupport, {
   classNames: ['SimpleForm-section'],
 
   changeset: null,
-
-  isEnabled: false,
 
   form: null,
 

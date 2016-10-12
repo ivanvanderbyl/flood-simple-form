@@ -1,4 +1,3 @@
-import Ember from 'ember';
 import Controller from 'ember-controller';
 
 import {
@@ -43,8 +42,7 @@ export default Controller.extend({
   AddressValidations,
 
   actions: {
-    handleFormSubmit(changeset) {
-      console.log(changeset.get('change'));
+    handleFormSubmit(/* changeset */) {
     }
   }
 });

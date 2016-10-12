@@ -1,7 +1,7 @@
 module.exports = {
   root: true,
   parserOptions: {
-    ecmaVersion: 6,
+    ecmaVersion: 7,
     sourceType: 'module'
   },
   extends: [
@@ -9,7 +9,8 @@ module.exports = {
     'plugin:ember-suave/recommended'
   ],
   env: {
-    'browser': true
+    'browser': true,
+    'es6': true
   },
   rules: {
   }

@@ -1,43 +1,6 @@
-{{!-- {{yield (hash
-    input=(component "simple-form/simple-input"
-      disabled=disabled
-      changeset=changeset
-      internal-input-focus=(action "inputDidFocus")
-      internal-input-blur=(action "inputDidBlur")
-      _change=(action "inputValueChanged")
-    )
-
-    section=(component "simple-form/section"
-      form=this
-      disabled=disabled
-      _change=(action "mergeSubChangeset" )
-      _remove=(action "removeSubChangeset")
-    )
-
-    submit=(component "simple-form/simple-submit"
-      form=elementId
-      disabled=disabled
-      action=(action "submitForm")
-    )
-    rollback=(component "simple-form/simple-submit"
-      disabled=disabled
-      action=(action "rollback")
-    )
-
-    errors=errors
-    changes=changes
-    isValid=isValid
-    isInvalid=isInvalid
-    isDisabled=disabled
-  )
-  changeset
-}}
- --}}
-
 {{#simple-form/section
   form=this
   changeset=changeset
-  isEnabled=true
   disabled=disabled
   _change=(action "mergeSubChangeset")
   _remove=(action "removeSubChangeset")

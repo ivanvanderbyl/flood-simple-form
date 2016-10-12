@@ -13,7 +13,7 @@
   {{/f.input}}
 
   {{f.input "collectCountry" type="boolean" label="Country?"}}
-  {{#f.section (changeset user PersonDetailValidations) isEnabled=changeset.collectCountry as |f changeset|}}
+  {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
     <fieldset>
       <legend>Country</legend>
       {{f.input "country" type="select" placeholder="Country..." label="Country" collection=countries optionValuePath="id" optionLabelPath="name"}}

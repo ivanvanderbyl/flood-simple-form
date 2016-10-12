@@ -5,7 +5,7 @@ import {
   validatePresence,
   validateLength,
   validateFormat,
-  validateInclusion,
+  validateInclusion
 } from 'ember-changeset-validations/validators';
 
 const UserValidations = {

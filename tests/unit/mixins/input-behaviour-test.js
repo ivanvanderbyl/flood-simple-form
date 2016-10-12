@@ -4,7 +4,7 @@ import { module, test } from 'qunit';
 
 module('Unit | Mixin | input behaviour');
 
-const { Object:EO } = Ember;
+const { Object: EO } = Ember;
 
 test('it works', function(assert) {
   let InputBehaviourObject = EO.extend(InputBehaviourMixin);

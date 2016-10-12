@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import computed from 'ember-computed';
-import Changeset from 'ember-changeset';
-const { set, get, Mixin, guidFor, assert, isPresent } = Ember;
+const { get, Mixin, guidFor, assert, isPresent } = Ember;
 
 /**
  * Merges 1 or more changesets together returning a fresh changeset
@@ -26,6 +25,7 @@ export default Mixin.create({
   title: null,
 
   init() {
+    //
     this[SECTIONS] = new Map();
     this._super();
   },
@@ -52,31 +52,22 @@ export default Mixin.create({
   actions: {
     inputValueChanged(field, value) {
       let sectionChangeset = get(this, 'changeset');
-      let changesetId = get(this, 'changesetId');
       sectionChangeset.set(field, value);
-      let sections = get(this, SECTIONS);
+      this.propertyDidChange('changeset');
+
+      let changesetId = get(this, 'changesetId');
       let compositeChangeset = get(this, 'compositeChangeset');
       this.sendAction(CHANGE_ACTION, { changeset: compositeChangeset, id: changesetId });
-      console.debug('SEND CHANGE EVENT');
     },
 
     mergeSubChangeset({ id, changeset }) {
-      let sectionChangeset = get(this, 'changeset');
       let sections = get(this, SECTIONS);
       sections.set(id, changeset);
+      this.propertyDidChange(SECTIONS);
 
-      // let c = compositeChangeset(sectionChangeset, changeset, ...sections.values());
-      // let changesetId = get(this, 'changesetId');
       let compositeChangeset = this.get('compositeChangeset');
       let changesetId = get(this, 'changesetId');
       this.sendAction(CHANGE_ACTION, { id: changesetId, changeset: compositeChangeset });
-
-      // this.send('_afterMergeSubChangeset', { changeset: c, id: changesetId });
-      console.debug('MERGE');
-    },
-
-    _afterMergeSubChangeset({ id, changeset }) {
-      // this.sendAction(CHANGE_ACTION, { id, changeset });
     },
 
     removeSubChangeset({ id }) {
