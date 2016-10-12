@@ -1,5 +1,16 @@
 # Flood Simple Form Changelog
 
+### 0.2.2 (October 12, 2016)
+
+- Added `isNeeded` on sections to indicate that we need to keep it around even
+  when a section is removed from the DOM. This only applies one level up, so you
+  must indicate this at all nested levels with an equally truthy condition.
+
+### 0.2.1 (October 12, 2016)
+
+- Added support for nested sections
+- Refactored to properly track changes in nested sections
+
 ### 0.2.0 (July 14, 2016)
 
 - Removed support for buffer (breaking)
