@@ -14,7 +14,7 @@ const INLINE_TYPES = {
 
 const DEFAULT_TYPE = 'string';
 const restrictedAttrs = ['classNames', 'type', 'hint', 'tagName',
-  'changeset', 'errors', 'internal-on-change', 'internal-on-change'
+  'changeset', 'errors', '_change', '_change'
 ];
 
 const InputComponent = Component.extend({
@@ -150,7 +150,7 @@ const InputComponent = Component.extend({
   actions: {
     inputValueChanged(newValue) {
       let modelAttr = get(this, 'modelAttr');
-      this.sendAction('internal-on-change', modelAttr, newValue);
+      this.sendAction('_change', modelAttr, newValue);
       this.sendAction('on-change', newValue);
     },
 

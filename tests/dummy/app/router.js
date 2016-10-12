@@ -9,6 +9,9 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
+  this.route('examples', function() {
+    this.route('nested-sections');
+  });
 });
 
 export default Router;

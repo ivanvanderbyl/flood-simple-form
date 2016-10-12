@@ -1,11 +1,12 @@
 import Ember from 'ember';
+import Changeset from 'ember-changeset';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import {
   validatePresence,
   validateLength,
   validateFormat,
-  validateInclusion,
+  validateInclusion
 } from 'ember-changeset-validations/validators';
 
 const UserValidations = {
@@ -33,12 +34,17 @@ const PersonDetailValidations = {
   ]
 };
 
+const AddressValidations = {
+  street: [validatePresence(true)]
+};
+
 const { run } = Ember;
+const { keys } = Object;
 
 moduleForComponent('simple-form/section', 'Integration | Component | simple form/section', {
   integration: true,
   beforeEach() {
-    this.setProperties({ PersonDetailValidations,UserValidations });
+    this.setProperties({ PersonDetailValidations, UserValidations });
     this.set('countries', [
       { id: 'au', name: 'Australia' },
       { id: 'us', name: 'United States' },
@@ -70,4 +76,152 @@ test('it renders a section', function(assert) {
   run(() => this.$('.collect-country input[type="checkbox"]').trigger('click'));
 
   run(() => assert.equal(this.$('.country').length, 1, 'it shows the select country dropdown'));
+});
+
+test('it supports nested sections', function(assert) {
+  let submitCount = 0;
+
+  this.set('user', {
+    collectSection1: false,
+    collectSection2: false
+  });
+
+  this.on('handleFormSubmit', function(changeset) {
+    submitCount++;
+
+    if (submitCount === 1) {
+      console.log('first submit', changeset.get('change'));
+    } else if (submitCount === 2) {
+      assert.deepEqual(changeset.get('change'), { 'collectSection1': false }, 'should only contain top level changeset');
+      console.log('submit 2', changeset.get('change'));
+    } else {
+      assert.deepEqual(changeset.get('change'), { collectSection1: true }, 'should collect section 1 without any attrs');
+      console.log('last submit', changeset.get('change'));
+    }
+  });
+
+  this.set('masterChangeset', new Changeset(this.get('user', UserValidations)));
+
+  this.render(hbs`
+    {{#simple-form masterChangeset on-submit=(action "handleFormSubmit") as |f changeset|}}
+      {{f.input "collectSection1" type="boolean" label="Section 1"}}
+      {{#f.section (changeset user PersonDetailValidations) isEnabled=changeset.collectSection1 as |f changeset|}}
+        {{f.input "fullName" label="Full name"}}
+        {{f.input "collectSection2" type="boolean" label="Section 2"}}
+        {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
+
+        {{#f.section (changeset user AddressValidations) isEnabled=changeset.collectSection2 as |f changeset|}}
+          {{f.input "street" label="Street"}}
+        {{/f.section}}
+
+        {{#f.section (changeset user AddressValidations) isEnabled=changeset.collectSection2Additional as |f changeset|}}
+          {{f.input "streetAdditional" label="Street (Line 2)"}}
+        {{/f.section}}
+
+      {{/f.section}}
+
+      {{f.submit "Save"}}
+    {{/simple-form}}
+  `);
+
+  // 1. Open all sections and fill in street name
+  run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.collect-section2 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.street input').val('Larnook Street').change());
+  run(() => this.$('button').click());
+
+  // 2. Assert fields are showing
+  run(() => {
+    assert.equal(this.$('.full-name').length, 1, 'is showing section 1');
+    assert.equal(this.$('.street').length, 1, 'is showing address');
+    // console.log(this.get('masterChangeset.change'));
+  });
+
+  // 3. Close first section, thus removing nested section
+  run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('button').click());
+
+  // 4. Assert not showing sections
+  run(() => {
+    assert.equal(this.$('.full-name').length, 0, 'is showing section 1');
+    assert.equal(this.$('.street').length, 0, 'is showing address');
+  });
+
+  // 5. Enable section again
+  run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('button').click());
+
+});
+
+test('multiple nested sections', function(assert) {
+  let submitCount = 0;
+  this.set('user', {});
+  assert.expect(5);
+
+  this.on('handleFormSubmit', function(changeset) {
+    submitCount++;
+    let changes = changeset.get('change');
+
+    if (submitCount === 1) {
+      assert.equal(changes.fullName, 'John Smith', 'sets full name');
+      assert.equal(changes.street, 'Larnook Street', 'sets street');
+      assert.equal(changes.streetAdditional, 'Unit 1', 'sets street additonal');
+    } else if (submitCount === 2) {
+      assert.deepEqual(changes, {
+        'collectSection1': true,
+        'collectSection2': false,
+        'collectSection2Additional': false,
+        'fullName': 'John Smith'
+      }, 'only contains section 1 keys');
+    } else if (submitCount === 3) {
+      assert.deepEqual(changes, { 'collectSection1': false }, 'only contains form keys');
+    }
+  });
+
+  this.render(hbs`
+    {{#simple-form (changeset user UserValidations) on-submit=(action "handleFormSubmit") as |f changeset|}}
+      {{f.input "collectSection1" type="boolean" label="Section 1"}}
+      {{#if changeset.collectSection1}}
+        {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
+          {{f.input "fullName" label="Full name"}}
+          {{f.input "collectSection2" type="boolean" label="Section 2"}}
+
+          {{#if changeset.collectSection2}}
+            {{#f.section (changeset user AddressValidations) as |f changeset|}}
+              {{f.input "street" label="Street"}}
+            {{/f.section}}
+          {{/if}}
+
+          {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
+          {{#if changeset.collectSection2Additional}}
+            {{#f.section (changeset user AddressValidations) as |f changeset|}}
+              {{f.input "streetAdditional" label="Street (Line 2)"}}
+            {{/f.section}}
+          {{/if}}
+
+        {{/f.section}}
+      {{/if}}
+
+      {{f.submit "Save"}}
+    {{/simple-form}}
+  `);
+
+  // 1. Open all sections and fill in street name
+  run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.collect-section2 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.collect-section2-additional input[type="checkbox"]').trigger('click').change());
+
+  run(() => this.$('.full-name input').val('John Smith').change());
+  run(() => this.$('.street input').val('Larnook Street').change());
+  run(() => this.$('.street-additional input').val('Unit 1').change());
+  run(() => this.$('button').click());
+
+  // 2. Disable 2nd level sections and their details should not be present
+  run(() => this.$('.collect-section2 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('.collect-section2-additional input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('button').click());
+
+  // 3. No fields
+  run(() => this.$('.collect-section1 input[type="checkbox"]').trigger('click').change());
+  run(() => this.$('button').click());
 });
