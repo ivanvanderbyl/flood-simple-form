@@ -56,18 +56,22 @@ test('it propagates changeset to form inputs', function(assert) {
 
 test('it emits change events when a field changes', function(assert) {
   assert.expect(1);
+  let changeCount = 0;
 
   this.set('user', {
     number: '415 000 0000'
   });
 
   this.on('handleInputValueChange', function(changeset) {
-    assert.deepEqual(changeset.get('changes'), [
-      {
-        'key': 'email',
-        'value': 'user@flood.io'
-      }
-    ], 'email field changed');
+    changeCount++;
+    if (changeCount === 1) {
+      assert.deepEqual(changeset.get('changes'), [
+        {
+          'key': 'email',
+          'value': 'user@flood.io'
+        }
+      ], 'email field changed');
+    }
   });
 
   this.render(hbs`

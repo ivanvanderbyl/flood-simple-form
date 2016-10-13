@@ -1,25 +1,46 @@
-{{#simple-form (changeset user UserValidations) on-submit=(action "handleFormSubmit") as |f changeset|}}
-  {{f.input "collectSection1" type="boolean" label="Section 1"}}
-  {{#if changeset.collectSection1}}
-    {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
-      {{f.input "fullName" label="Full name"}}
-      {{f.input "collectSection2" type="boolean" label="Section 2"}}
+{{#with (hash
+  section2Changeset=(changeset user AddressValidations)
+) as |changesets|}}
+  {{#simple-form (changeset user UserValidations) on-submit=(action "handleFormSubmit") as |f changeset|}}
+    {{f.input "collectSection1" type="boolean" label="Section 1"}}
+    {{#if changeset.collectSection1}}
+      {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
+        {{f.input "fullName" label="Full name"}}
+        {{f.input "collectSection2" type="boolean" label="Section 2"}}
+        {{f.input "isSpecialUser" type="boolean" label="Is Special User" hint="Keep additional details around"}}
 
-      {{#if changeset.collectSection2}}
-        {{#f.section (changeset user AddressValidations) as |f changeset|}}
-          {{f.input "street" label="Street"}}
-        {{/f.section}}
-      {{/if}}
+        {{#if changeset.collectSection2}}
+          {{#f.section (changeset user AddressValidations) as |f changeset|}}
+            {{f.input "street" label="Street"}}
+          {{/f.section}}
+        {{/if}}
 
-      {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
-      {{#if changeset.collectSection2Additional}}
-        {{#f.section (changeset user AddressValidations) isNeeded=true as |f changeset|}}
-          {{f.input "streetAdditional" label="Street (Line 2)"}}
-        {{/f.section}}
-      {{/if}}
+        {{f.input "collectSection2Additional" type="boolean" label="Section 2"}}
+        {{#if changeset.collectSection2Additional}}
+          {{#f.section changesets.section2Changeset isNeeded=changeset.isSpecialUser as |f changeset|}}
+            {{f.input "streetAdditional" label="Street (Line 2)"}}
+          {{/f.section}}
+        {{/if}}
 
-    {{/f.section}}
-  {{/if}}
+      {{/f.section}}
+    {{/if}}
 
-  {{f.submit "Save"}}
-{{/simple-form}}
+    {{#if f.isInvalid}}
+      {{#with (union (map-by "key" f.errors)) as |errors|}}
+        {{#if (eq errors.length 1)}}
+          <p class="description invalid">There is an invalid field</p>
+        {{else}}
+          <p class="description invalid">There are {{errors.length}} invalid fields</p>
+        {{/if}}
+      {{/with}}
+
+      <div class="Errors">
+        {{#each f.errors as |error|}}
+          <div>{{error.validations.firstObject}}</div>
+        {{/each}}
+      </div>
+    {{/if}}
+
+    {{f.submit "Save" disabled=f.isInvalid}}
+  {{/simple-form}}
+{{/with}}

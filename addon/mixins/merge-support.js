@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import computed from 'ember-computed';
-const { get, Mixin, guidFor, assert, isPresent } = Ember;
+const { observer, run, get, Mixin, guidFor, isPresent } = Ember;
 
 /**
  * Merges 1 or more changesets together returning a fresh changeset
@@ -25,15 +25,24 @@ export default Mixin.create({
   title: null,
 
   init() {
-    //
     this[SECTIONS] = new Map();
     this._super();
   },
 
+  changesetDidChange: observer('changeset._changes', 'changeset._errors', function() {
+    let changeset = get(this, 'changeset');
+    if (changeset.get('isDirty')) {
+      this.send('_sendUpdate');
+    }
+  }),
+
   compositeChangeset: computed('changeset', SECTIONS, {
     get() {
       let masterChangeset = get(this, 'changeset');
-      assert('section must have a changeset', isPresent(masterChangeset));
+      if (!isPresent(masterChangeset)) {
+        return null;
+      }
+
       return compositeChangeset(masterChangeset, ...this[SECTIONS].values());
     }
   }),
@@ -50,24 +59,33 @@ export default Mixin.create({
   errors: computed.alias('compositeChangeset.errors'),
 
   actions: {
+    /**
+     * Handles changes from form inputs by field name and value, assigning the
+     * result directly to this section's changeset.
+     *
+     * NOTE: There's no need to trigger an update here as we do so in the observer.
+     *
+     * @private
+     */
     inputValueChanged(field, value) {
       let sectionChangeset = get(this, 'changeset');
       sectionChangeset.set(field, value);
       this.propertyDidChange('changeset');
-
-      let changesetId = get(this, 'changesetId');
-      let compositeChangeset = get(this, 'compositeChangeset');
-      this.sendAction(CHANGE_ACTION, { changeset: compositeChangeset, id: changesetId });
+      this.send('_sendUpdate');
     },
 
+    /**
+     * Handles changes from nested changesets, merging them with our own changeset,
+     * then propagating the composite changeset to the parent section/form.
+     *
+     * @private
+     */
     mergeSubChangeset({ id, changeset }) {
       let sections = get(this, SECTIONS);
       sections.set(id, changeset);
       this.propertyDidChange(SECTIONS);
 
-      let compositeChangeset = this.get('compositeChangeset');
-      let changesetId = get(this, 'changesetId');
-      this.sendAction(CHANGE_ACTION, { id: changesetId, changeset: compositeChangeset });
+      this.send('_sendUpdate');
     },
 
     removeSubChangeset({ id }) {
@@ -76,11 +94,21 @@ export default Mixin.create({
         sections.get(id).rollback();
         sections.delete(id);
         this.propertyDidChange(SECTIONS);
+        this.send('_sendUpdate');
+      }
+    },
+
+    _sendUpdate() {
+      run.scheduleOnce('actions', this, function() {
+        let changeset = this.get('changeset');
+        if (!changeset) {
+          return;
+        }
 
         let compositeChangeset = this.get('compositeChangeset');
         let changesetId = get(this, 'changesetId');
         this.sendAction(CHANGE_ACTION, { id: changesetId, changeset: compositeChangeset });
-      }
+      });
     }
   }
 });

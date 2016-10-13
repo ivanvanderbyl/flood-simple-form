@@ -2,7 +2,7 @@ import Ember from 'ember';
 import layout from './template';
 import Component from 'ember-component';
 import MergeSupport, { REMOVE_ACTION } from 'flood-simple-form/mixins/merge-support';
-const { guidFor, get } = Ember;
+const { guidFor, get, run } = Ember;
 
 const SectionComponent = Component.extend(MergeSupport, {
   layout,
@@ -37,6 +37,12 @@ const SectionComponent = Component.extend(MergeSupport, {
 
   willDestroyElement() {
     this.trigger('sectionWillDisable');
+  },
+
+  didInsertElement() {
+    run.next(() => {
+      this.send('_sendUpdate');
+    });
   },
 
   actions: {
