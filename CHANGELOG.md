@@ -1,5 +1,10 @@
 # Flood Simple Form Changelog
 
+
+### 0.2.3 (October 13, 2016)
+
+- Changes to underlying changeset now propagate through parent changesets.
+
 ### 0.2.2 (October 12, 2016)
 
 - Added `isNeeded` on sections to indicate that we need to keep it around even
