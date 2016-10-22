@@ -5,7 +5,7 @@
     {{f.input "collectSection1" type="boolean" label="Section 1"}}
     {{#if changeset.collectSection1}}
       {{#f.section (changeset user PersonDetailValidations) as |f changeset|}}
-        {{f.input "fullName" label="Full name"}}
+        {{f.input "fullName" label="Full name" on-change=(action "fullNameChanged" changeset)}}
         {{f.input "collectSection2" type="boolean" label="Section 2"}}
         {{f.input "isSpecialUser" type="boolean" label="Is Special User" hint="Keep additional details around"}}
 

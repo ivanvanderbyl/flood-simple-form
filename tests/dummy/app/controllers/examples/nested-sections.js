@@ -43,11 +43,18 @@ export default Controller.extend({
   AddressValidations,
 
   actions: {
+    fullNameChanged(changeset) {
+      console.log(changeset.get('fullName'));
+    },
+
     handleFormSubmit(changeset) {
       return changeset.validate().then(() => {
         if (changeset.get('isValid')) {
-          changeset.execute();
-          Logger.log(this.get('user'));
+          // changeset.execute();
+          // Logger.log(this.get('user'));
+
+          Logger.log(changeset.get('changes'));
+
           return new RSVP.Promise((resolve) => setTimeout(resolve.bind(this, true), 1e3));
         } else {
           Logger.log('invalid');
