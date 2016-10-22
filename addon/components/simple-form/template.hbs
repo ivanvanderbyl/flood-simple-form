@@ -6,23 +6,36 @@
   _change=(action "mergeSubChangeset")
   _remove=(action "removeSubChangeset")
 as |f changeset|}}
-  {{yield (hash
-    errors=errors
-    changes=changes
-    isValid=isValid
-    isInvalid=isInvalid
-    isDisabled=disabled
+  {{yield
+    (hash
+      errors=errors
+      changes=changes
+      isValid=isValid
+      isInvalid=isInvalid
+      isDisabled=disabled
+      isPristine=isPristine
 
-    input=f.input
-    section=f.section
-    submit=(component "simple-form/simple-submit"
-      form=elementId
-      disabled=disabled
-      action=(action "submitForm")
+      input=f.input
+      section=(component "simple-form/section"
+        form=this
+        parentSection=f
+        disabled=f.disabled
+        parentChangeset=changeset
+        _change=(action "mergeSubChangeset" )
+        _remove=(action "removeSubChangeset")
+      )
+      submit=(component "simple-form/simple-submit"
+        form=elementId
+        disabled=disabled
+        action=(action "submitForm")
+      )
+      rollback=(component "simple-form/simple-submit"
+        disabled=disabled
+        action=(action "rollback")
+      )
     )
-    rollback=(component "simple-form/simple-submit"
-      disabled=disabled
-      action=(action "rollback")
-    )
-  ) changeset}}
+
+    changeset
+    compositeChangeset
+  }}
 {{/simple-form/section}}
