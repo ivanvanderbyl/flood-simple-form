@@ -138,13 +138,18 @@ const InputComponent = Component.extend({
     }, {});
 
     let changeset = this.getAttr('changeset');
-    let modelAttr = get(this, 'modelAttr');
+    let modelAttr = this.getAttr('modelAttr');
 
     if (modelAttr && isPresent(changeset)) {
-      this.set('value', get(changeset, modelAttr));
+      let value = changeset.get(modelAttr);
+      this.set('value', value);
     }
 
     this.set('inputAttributes', inputAttributes);
+  },
+
+  didInsertElement() {
+    this.sendAction('_insert', this.get('modelAttr'));
   },
 
   actions: {

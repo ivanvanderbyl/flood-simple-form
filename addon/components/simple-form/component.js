@@ -22,6 +22,8 @@ const SimpleFormComponent = Component.extend(MergeSupport, {
 
   attributeBindings: ['disabled'],
 
+  instrumentName: 'simple-form:form',
+
   /**
    * Changeset to propagate changes to.
    *
@@ -34,12 +36,25 @@ const SimpleFormComponent = Component.extend(MergeSupport, {
   errors: computed.reads('compositeChangeset.errors'),
   changes: computed.reads('compositeChangeset.changes'),
 
-  isValid: computed.empty('errors'),
-  isInvalid: computed.not('isValid'),
+  isValid: computed.reads('compositeChangeset.isValid'),
+  isInvalid: computed.reads('compositeChangeset.isInvalid'),
+  isPristine: computed.reads('compositeChangeset.isPristine'),
+  isDirty: computed.reads('compositeChangeset.isDirty'),
 
   submit(event) {
     event.preventDefault();
     this.send('submitForm');
+  },
+
+  // changesetDidChange: Ember.observer('changeset.change.name', function() {
+  //   console.log(this.get('instrumentName'), this.get('changeset').get('change'));
+  // }),
+
+  didInsertElement() {
+    this.sendAction('on-insert', get(this, 'changeset'));
+  },
+
+  didReceiveAttrs() {
   },
 
   actions: {
@@ -54,7 +69,10 @@ const SimpleFormComponent = Component.extend(MergeSupport, {
     mergeSubChangeset({ id, changeset }) {
       let sections = get(this, SECTIONS);
       sections.set(id, changeset);
+
+      this.propertyDidChange('changeset');
       this.propertyDidChange(SECTIONS);
+
       this.sendAction('on-change', get(this, 'compositeChangeset'));
     },
 

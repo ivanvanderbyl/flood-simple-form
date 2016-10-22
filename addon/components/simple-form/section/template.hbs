@@ -5,12 +5,14 @@
       changeset=changeset
       enter=(action "propagateEnter")
       cancel=(action "propagateCancel")
+      _insert=(action "notifyInputInsert")
       _change=(action "inputValueChanged")
     )
 
     section=(component "simple-form/section"
       form=form
       parentSection=this
+      parentChangeset=changeset
       disabled=disabled
       _change=(action "mergeSubChangeset" )
       _remove=(action "removeSubChangeset")
