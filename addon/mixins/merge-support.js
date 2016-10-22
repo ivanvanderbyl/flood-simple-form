@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import computed from 'ember-computed';
+
 const { observer, run, get, Mixin, guidFor, isPresent } = Ember;
 
 /**
@@ -29,14 +30,15 @@ export default Mixin.create({
     this._super();
   },
 
-  changesetDidChange: observer('changeset._changes', 'changeset._errors', function() {
+  changesetDidChange: observer('changeset.change', 'changeset.error', 'changeset', function() {
+    // console.debug('changesetDidChange');
     let changeset = get(this, 'changeset');
     if (changeset.get('isDirty')) {
       this.send('_sendUpdate');
     }
   }),
 
-  compositeChangeset: computed('changeset', SECTIONS, {
+  compositeChangeset: computed('changeset.change', 'changeset.error', 'changeset', SECTIONS, {
     get() {
       let masterChangeset = get(this, 'changeset');
       if (!isPresent(masterChangeset)) {
