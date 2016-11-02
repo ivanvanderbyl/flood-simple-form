@@ -5,7 +5,7 @@
   disabled=disabled
   _change=(action "mergeSubChangeset")
   _remove=(action "removeSubChangeset")
-as |f changeset|}}
+as |f sectionChangeset|}}
   {{yield
     (hash
       errors=errors
@@ -20,7 +20,7 @@ as |f changeset|}}
         form=this
         parentSection=f
         disabled=f.disabled
-        parentChangeset=changeset
+        parentChangeset=sectionChangeset
         _change=(action "mergeSubChangeset" )
         _remove=(action "removeSubChangeset")
       )
@@ -35,7 +35,7 @@ as |f changeset|}}
       )
     )
 
-    changeset
+    sectionChangeset
     compositeChangeset
   }}
 {{/simple-form/section}}
