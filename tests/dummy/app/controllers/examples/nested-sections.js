@@ -43,8 +43,7 @@ export default Controller.extend({
   AddressValidations,
 
   actions: {
-    fullNameChanged(changeset) {
-      console.log(changeset.get('fullName'));
+    fullNameChanged(/* changeset*/) {
     },
 
     handleFormSubmit(changeset) {
